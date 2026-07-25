@@ -1,16 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'state/aegis_provider.dart';
-import 'theme/app_colors.dart';
-import 'screens/main_shell.dart';
+import 'core/constants/app_strings.dart';
+import 'core/theme/app_theme.dart';
+import 'core/widgets/error_boundary.dart';
+import 'features/shell/presentation/screens/main_shell_screen.dart';
+import 'features/surveillance_system/data/repositories/mock_surveillance_repository.dart';
+import 'features/surveillance_system/domain/repositories/i_surveillance_repository.dart';
+import 'features/surveillance_system/presentation/controllers/aegis_provider.dart';
+import 'features/surveillance_system/presentation/controllers/telemetry_notifier.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(
-    ChangeNotifierProvider(
-      create: (_) => AegisProvider(),
-      child: const AegisCommandApp(),
+    MultiProvider(
+      providers: [
+        Provider<ISurveillanceRepository>(
+          create: (_) => const MockSurveillanceRepository(),
+        ),
+        ChangeNotifierProvider<AegisProvider>(
+          create: (context) => AegisProvider(
+            repository: context.read<ISurveillanceRepository>(),
+          ),
+        ),
+        ChangeNotifierProvider<TelemetryNotifier>(
+          create: (_) => TelemetryNotifier(),
+        ),
+      ],
+      child: const ErrorBoundary(
+        child: AegisCommandApp(),
+      ),
     ),
   );
 }
@@ -22,7 +41,7 @@ class AegisCommandApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'أيجيس — غرفة القيادة والسيطرة التنفيذية',
+      title: AppStrings.appTitle,
       debugShowCheckedModeBanner: false,
       locale: const Locale('ar', 'SA'),
       supportedLocales: const [Locale('ar', 'SA'), Locale('en', 'US')],
@@ -32,14 +51,7 @@ class AegisCommandApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       themeMode: ThemeMode.dark,
-      darkTheme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: AppColors.bgPage,
-        colorScheme: const ColorScheme.dark(
-          primary: AppColors.cyan,
-          surface: AppColors.panel,
-        ),
-        textTheme: GoogleFonts.cairoTextTheme(ThemeData.dark().textTheme),
-      ),
+      darkTheme: AppTheme.darkTheme,
       home: const MainShellScreen(),
     );
   }

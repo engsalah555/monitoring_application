@@ -1,19 +1,35 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
+import 'package:monitoring_application/core/constants/app_strings.dart';
 import 'package:monitoring_application/main.dart';
-import 'package:monitoring_application/state/aegis_provider.dart';
+import 'package:monitoring_application/features/surveillance_system/data/repositories/mock_surveillance_repository.dart';
+import 'package:monitoring_application/features/surveillance_system/domain/repositories/i_surveillance_repository.dart';
+import 'package:monitoring_application/features/surveillance_system/presentation/controllers/aegis_provider.dart';
+import 'package:monitoring_application/features/surveillance_system/presentation/controllers/telemetry_notifier.dart';
 
 void main() {
   testWidgets('AegisCommandApp smoke test', (WidgetTester tester) async {
-    // Build our app wrapped with AegisProvider and trigger a frame.
     await tester.pumpWidget(
-      ChangeNotifierProvider(
-        create: (_) => AegisProvider(),
+      MultiProvider(
+        providers: [
+          Provider<ISurveillanceRepository>(
+            create: (_) => const MockSurveillanceRepository(),
+          ),
+          ChangeNotifierProvider<AegisProvider>(
+            create: (context) => AegisProvider(
+              repository: context.read<ISurveillanceRepository>(),
+            ),
+          ),
+          ChangeNotifierProvider<TelemetryNotifier>(
+            create: (_) => TelemetryNotifier(),
+          ),
+        ],
         child: const AegisCommandApp(),
       ),
     );
 
-    // Verify that executive brand title is displayed.
-    expect(find.text('AEGIS COMMAND'), findsOneWidget);
+    await tester.pumpAndSettle();
+
+    expect(find.text(AppStrings.brandTitle), findsOneWidget);
   });
 }
