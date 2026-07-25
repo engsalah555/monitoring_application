@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'core/constants/app_strings.dart';
 import 'core/theme/app_theme.dart';
@@ -12,6 +14,29 @@ import 'features/surveillance_system/presentation/controllers/telemetry_notifier
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Allow runtime fetching of fonts with graceful fallback handling
+  GoogleFonts.config.allowRuntimeFetching = true;
+
+  // Intercept offline font loading exceptions gracefully
+  final originalOnError = FlutterError.onError;
+  FlutterError.onError = (FlutterErrorDetails details) {
+    if (details.exceptionAsString().contains('google_fonts') ||
+        details.exceptionAsString().contains('fonts.gstatic.com')) {
+      debugPrint('GoogleFonts offline fallback activated: ${details.exception}');
+      return;
+    }
+    originalOnError?.call(details);
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    if (error.toString().contains('google_fonts') ||
+        error.toString().contains('fonts.gstatic.com')) {
+      debugPrint('Handled offline font fetch exception silently.');
+      return true;
+    }
+    return false;
+  };
   runApp(
     MultiProvider(
       providers: [

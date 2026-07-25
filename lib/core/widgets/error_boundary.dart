@@ -14,10 +14,27 @@ class ErrorBoundary extends StatefulWidget {
 
 class _ErrorBoundaryState extends State<ErrorBoundary> {
   Object? _error;
+  late final ErrorWidgetBuilder _originalErrorBuilder;
 
   @override
   void initState() {
     super.initState();
+    _originalErrorBuilder = ErrorWidget.builder;
+    ErrorWidget.builder = (FlutterErrorDetails details) {
+      _logError(details);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() => _error = details.exception);
+        }
+      });
+      return const SizedBox.shrink();
+    };
+  }
+
+  @override
+  void dispose() {
+    ErrorWidget.builder = _originalErrorBuilder;
+    super.dispose();
   }
 
   static void _logError(FlutterErrorDetails details) {
@@ -70,36 +87,6 @@ class _ErrorBoundaryState extends State<ErrorBoundary> {
       );
     }
 
-    return ErrorWidgetBuilder(
-      onError: (details) {
-        _logError(details);
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (mounted) {
-            setState(() => _error = details.exception);
-          }
-        });
-      },
-      child: widget.child,
-    );
-  }
-}
-
-class ErrorWidgetBuilder extends StatelessWidget {
-  final void Function(FlutterErrorDetails details) onError;
-  final Widget child;
-
-  const ErrorWidgetBuilder({
-    super.key,
-    required this.onError,
-    required this.child,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    ErrorWidget.builder = (FlutterErrorDetails details) {
-      onError(details);
-      return const SizedBox.shrink();
-    };
-    return child;
+    return widget.child;
   }
 }

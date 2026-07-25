@@ -19,7 +19,7 @@ class AegisProvider extends ChangeNotifier {
   List<CameraNode> _zoneCameras = const [];
   List<AssetCategory> _assetCategories = const [];
   List<Branch> _branches = const [];
-  bool _isLoading = false;
+  bool _isLoading = true;
 
   // ── Getters ──────────────────────────────────────────────────────────────
   bool get isEmergency => _isEmergency;
@@ -46,8 +46,6 @@ class AegisProvider extends ChangeNotifier {
   }
 
   Future<void> loadInitialData() async {
-    _isLoading = true;
-    notifyListeners();
     try {
       _favoriteCameras = await _repository.getFavoriteCameras();
       _zoneCameras = await _repository.getZoneCameras('ZONE-B');
