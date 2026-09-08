@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/radar_avatar_ring.dart';
+import '../../../../core/widgets/royal/royal_glass.dart';
 import '../../../surveillance_system/presentation/controllers/aegis_provider.dart';
 
-import '../../../../core/theme/neumorphic_decorations.dart';
-
-/// Executive Header Status Card Widget.
+/// Royal Executive Header Status Card Widget.
 class ExecutiveHeaderCard extends StatelessWidget {
   const ExecutiveHeaderCard({super.key});
 
@@ -18,13 +17,18 @@ class ExecutiveHeaderCard extends StatelessWidget {
       selector: (_, p) =>
           (isEmergency: p.isEmergency, statusText: p.systemStatusText),
       builder: (context, state, child) {
-        final statusColor = state.isEmergency ? AppColors.red : AppColors.green;
+        final statusColor =
+            state.isEmergency ? AppPalette.crimsonAlert : AppPalette.emeraldLive;
 
-        return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-          decoration: NeumorphicDecorations.softRaised(
-            color: AppColors.clayCard,
-            borderRadius: 24,
+        return RoyalGlassContainer(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          borderRadius: 22,
+          backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.8),
+          border: Border.all(
+            color: state.isEmergency
+                ? AppPalette.crimsonAlert.withValues(alpha: 0.4)
+                : AppPalette.borderGlow,
+            width: 1.2,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -32,26 +36,52 @@ class ExecutiveHeaderCard extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    AppStrings.greetingUser,
-                    style: AppTypography.cairoBold(
-                      fontSize: 16.5,
-                      color: AppColors.textDarkPrimary,
-                    ),
+                  Row(
+                    children: [
+                      Text(
+                        AppStrings.greetingUser,
+                        style: AppTypography.cairoBold(
+                          fontSize: 16.5,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: AppPalette.imperialGold
+                              .withValues(alpha: 0.15),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(
+                            color: AppPalette.imperialGold
+                                .withValues(alpha: 0.4),
+                          ),
+                        ),
+                        child: Text(
+                          'الرئيس التنفيذي',
+                          style: AppTypography.cairoBold(
+                            fontSize: 10,
+                            color: AppPalette.imperialGold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
                       Container(
-                        width: 9,
-                        height: 9,
+                        width: 8,
+                        height: 8,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: statusColor,
                           boxShadow: [
                             BoxShadow(
-                              color: statusColor.withValues(alpha: 0.6),
-                              blurRadius: 6,
+                              color: statusColor.withValues(alpha: 0.7),
+                              blurRadius: 8,
+                              spreadRadius: 1,
                             )
                           ],
                         ),
@@ -60,22 +90,22 @@ class ExecutiveHeaderCard extends StatelessWidget {
                       Text(
                         state.statusText,
                         style: AppTypography.cairoRegular(
-                          fontSize: 12,
-                          color: AppColors.textDarkSecondary,
+                          fontSize: 11.5,
+                          color: AppPalette.textLightSecondary,
                         ),
                       ),
                     ],
                   ),
                 ],
               ),
-              // Avatar with Radar Glow Ring
+              // Royal Avatar with Radar Glow Ring
               RadarRingWidget(
                 size: 48,
-                borderColor: AppColors.primaryBlue,
+                borderColor: AppPalette.primary,
                 child: Container(
                   decoration: const BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: AppColors.primaryGradient,
+                    gradient: AppPalette.royalSapphireGradient,
                   ),
                   child: Center(
                     child: Text(

@@ -1,170 +1,238 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/royal/royal_badge.dart';
+import '../../../../core/widgets/royal/royal_glass.dart';
 import '../../../surveillance_system/domain/entities/app_tab.dart';
 import '../../../surveillance_system/presentation/controllers/aegis_provider.dart';
 
-/// Clean, decoupled App Bar widget for AEGIS Command Center.
+/// Royal Executive Frosted Glass App Bar for AEGIS Command Center.
 class AegisAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AegisAppBar({super.key});
 
   @override
-  Size get preferredSize => const Size.fromHeight(72);
+  Size get preferredSize => const Size.fromHeight(74);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.darkIndigo,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+        color: AppPalette.bgDarkObsidian,
         boxShadow: [
           BoxShadow(
-            color: Color(0x33000000),
-            blurRadius: 16,
+            color: Color(0x66000000),
+            blurRadius: 20,
             offset: Offset(0, 4),
           ),
         ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: SafeArea(
-        child: Selector<AegisProvider, ({bool isEmergency, int alertCount})>(
-          selector: (_, p) =>
-              (isEmergency: p.isEmergency, alertCount: p.alertCount),
-          builder: (context, state, child) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Executive Logo & Subtitle
-                Row(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          child: RoyalGlassContainer(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            borderRadius: 20,
+            blur: 24,
+            backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.8),
+            border: Border.all(
+              color: AppPalette.borderGlow,
+              width: 1.2,
+            ),
+            child: Selector<AegisProvider, ({bool isEmergency, int alertCount})>(
+              selector: (_, p) =>
+                  (isEmergency: p.isEmergency, alertCount: p.alertCount),
+              builder: (context, state, child) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        gradient: AppColors.primaryGradient,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: AppColors.primaryBlue.withValues(alpha: 0.4),
-                            blurRadius: 10,
-                          ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.videocam_rounded,
-                          color: Colors.white,
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    // Brand Crest & Executive Monogram
+                    Row(
                       children: [
-                        Text(
-                          AppStrings.brandTitle,
-                          style: AppTypography.cairoBold(
-                            fontSize: 14,
-                            color: Colors.white,
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            gradient: state.isEmergency
+                                ? AppPalette.emergencyGradient
+                                : AppPalette.royalSapphireGradient,
+                            borderRadius: BorderRadius.circular(13),
+                            border: Border.all(
+                              color: state.isEmergency
+                                  ? AppPalette.crimsonAlert
+                                  : AppPalette.imperialGold,
+                              width: 1.2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: (state.isEmergency
+                                        ? AppPalette.crimsonAlert
+                                        : AppPalette.primary)
+                                    .withValues(alpha: 0.4),
+                                blurRadius: 10,
+                                offset: const Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: const Center(
+                            child: Icon(
+                              Icons.security_rounded,
+                              color: Colors.white,
+                              size: 22,
+                            ),
                           ),
                         ),
-                        Text(
-                          AppStrings.brandSubtitle,
-                          style: AppTypography.cairoRegular(
-                            fontSize: 10,
-                            color: AppColors.textLightSecondary,
+                        const SizedBox(width: 12),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(
+                              children: [
+                                Text(
+                                  AppStrings.brandTitle,
+                                  style: AppTypography.cairoBold(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 1.5),
+                                  decoration: BoxDecoration(
+                                    color: AppPalette.imperialGold
+                                        .withValues(alpha: 0.18),
+                                    borderRadius: BorderRadius.circular(6),
+                                    border: Border.all(
+                                      color: AppPalette.imperialGold
+                                          .withValues(alpha: 0.5),
+                                      width: 0.8,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'PRO',
+                                    style: AppTypography.monoBold(
+                                      fontSize: 9,
+                                      color: AppPalette.imperialGold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              AppStrings.brandSubtitle,
+                              style: AppTypography.cairoRegular(
+                                fontSize: 10,
+                                color: AppPalette.textLightMuted,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+
+                    // Royal Header Actions
+                    Row(
+                      children: [
+                        // Live Status / Alert Badge
+                        if (state.isEmergency)
+                          RoyalStatusBadge.alert(count: state.alertCount)
+                        else
+                          RoyalStatusBadge.live(label: 'مباشر (LIVE)'),
+                        const SizedBox(width: 8),
+
+                        // Sleek Emergency Mode Switch
+                        InkWell(
+                          onTap: () => context
+                              .read<AegisProvider>()
+                              .toggleEmergencyMode(),
+                          borderRadius: BorderRadius.circular(12),
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 250),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              gradient: state.isEmergency
+                                  ? AppPalette.emergencyGradient
+                                  : null,
+                              color: state.isEmergency
+                                  ? null
+                                  : AppPalette.cardDark.withValues(alpha: 0.8),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: state.isEmergency
+                                    ? AppPalette.crimsonAlert
+                                    : Colors.white.withValues(alpha: 0.15),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  state.isEmergency
+                                      ? Icons.warning_amber_rounded
+                                      : Icons.shield_moon_outlined,
+                                  size: 14,
+                                  color: state.isEmergency
+                                      ? Colors.white
+                                      : AppPalette.textLightSecondary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  state.isEmergency
+                                      ? AppStrings.emergencyCancel
+                                      : 'طوارئ',
+                                  style: AppTypography.cairoBold(
+                                    fontSize: 10.5,
+                                    color: state.isEmergency
+                                        ? Colors.white
+                                        : AppPalette.textLightSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+
+                        // Circular Glass Settings Button
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: AppPalette.cardDark.withValues(alpha: 0.7),
+                            borderRadius: BorderRadius.circular(11),
+                            border: Border.all(
+                              color: Colors.white.withValues(alpha: 0.12),
+                            ),
+                          ),
+                          child: IconButton(
+                            padding: EdgeInsets.zero,
+                            icon: const Icon(
+                              Icons.tune_rounded,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                            onPressed: () => context
+                                .read<AegisProvider>()
+                                .setSelectedTab(AppTab.settings),
+                            tooltip: 'إعدادات المنظومة',
                           ),
                         ),
                       ],
                     ),
                   ],
-                ),
-
-                // Header Actions
-                Row(
-                  children: [
-                    // Alerts Counter Badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: state.isEmergency
-                            ? AppColors.red.withValues(alpha: 0.2)
-                            : AppColors.amber.withValues(alpha: 0.2),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: state.isEmergency
-                              ? AppColors.red
-                              : AppColors.amber,
-                        ),
-                      ),
-                      child: Text(
-                        '${state.alertCount} تنبيهات',
-                        style: AppTypography.cairoBold(
-                          fontSize: 11,
-                          color: state.isEmergency
-                              ? AppColors.red
-                              : AppColors.amber,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-
-                    // Toggle Emergency Mode Button
-                    InkWell(
-                      onTap: () =>
-                          context.read<AegisProvider>().toggleEmergencyMode(),
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: state.isEmergency
-                              ? AppColors.red
-                              : AppColors.darkIndigoSurface,
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: state.isEmergency
-                                ? AppColors.red
-                                : Colors.white12,
-                          ),
-                        ),
-                        child: Text(
-                          state.isEmergency
-                              ? AppStrings.emergencyCancel
-                              : AppStrings.emergencySimulate,
-                          style: AppTypography.cairoBold(
-                            fontSize: 11,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-
-                    // Settings Icon Button
-                    IconButton(
-                      icon: const Icon(
-                        Icons.settings_outlined,
-                        color: Colors.white,
-                        size: 22,
-                      ),
-                      onPressed: () => context
-                          .read<AegisProvider>()
-                          .setSelectedTab(AppTab.settings),
-                      tooltip: 'إعدادات المنظومة',
-                    ),
-                  ],
-                ),
-              ],
-            );
-          },
+                );
+              },
+            ),
+          ),
         ),
       ),
     );
   }
 }
+

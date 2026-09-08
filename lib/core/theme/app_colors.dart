@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'app_palette.dart';
 
-/// Centralized Executive Neumorphic Soft-Clay Palette for AEGIS Command Center.
+/// Centralized Executive Palette for AEGIS Command Center.
+/// Delegates to and exposes [AppPalette] for clean design tokens.
 class AppColors {
   const AppColors._();
+
+  // ── 👑 Royal Palette Accessors (استدعاء مباشر للألوان الملكية) ────────────
+  static const Color royalPrimary = AppPalette.primary;
+  static const Color royalGold = AppPalette.imperialGold;
+  static const Color royalNavy = AppPalette.royalNavy;
+  static const Color royalObsidian = AppPalette.bgDarkObsidian;
+
 
   // ── Neumorphic Dual-Tone Core Colors ─────────────────────────────────────
   static const Color clayBg = Color(0xFFEFF2F9); // Soft lavender-grey clay background

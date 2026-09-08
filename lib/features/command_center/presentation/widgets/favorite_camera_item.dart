@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/radar_avatar_ring.dart';
 
-import '../../../../core/theme/neumorphic_decorations.dart';
-
-/// Reusable Favorite Camera Radar Ring Item.
+/// Reusable Royal Favorite Camera Radar Ring Item.
 class FavoriteCameraItem extends StatelessWidget {
   final String label;
   final Color color;
@@ -27,23 +25,48 @@ class FavoriteCameraItem extends StatelessWidget {
       child: Column(
         children: [
           RadarRingWidget(
-            size: 66,
+            size: 68,
             borderColor: color,
             isAlert: isAlert,
             child: Container(
-              decoration: NeumorphicDecorations.softRaised(
-                color: AppColors.clayCard,
-                borderRadius: 22,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: const LinearGradient(
+                  colors: [
+                    AppPalette.cardElevatedDark,
+                    AppPalette.surfaceDark,
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                border: Border.all(
+                  color: color.withValues(alpha: 0.5),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withValues(alpha: 0.25),
+                    blurRadius: 10,
+                  ),
+                ],
               ),
-              child: Icon(Icons.videocam_rounded, color: color, size: 24),
+              child: Center(
+                child: Icon(Icons.videocam_rounded, color: color, size: 26),
+              ),
             ),
           ),
           const SizedBox(height: 8),
-          Text(
-            label,
-            style: AppTypography.cairoSemiBold(
-              fontSize: 11,
-              color: AppColors.textDarkPrimary,
+          SizedBox(
+            width: 78,
+            child: Text(
+              label,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppTypography.cairoBold(
+                fontSize: 11.5,
+                color: Colors.white,
+              ),
             ),
           ),
         ],

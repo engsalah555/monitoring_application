@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../command_center/presentation/screens/command_center_screen.dart';
 import '../../../hierarchy/presentation/screens/hierarchy_screen.dart';
 import '../../../live_surveillance/presentation/screens/live_single_view_screen.dart';
@@ -27,7 +27,8 @@ class MainShellScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.bgPage,
+      extendBody: true,
+      backgroundColor: AppPalette.bgDarkObsidian,
       appBar: const AegisAppBar(),
       body: Selector<AegisProvider, int>(
         selector: (_, p) => p.selectedTabIndex,

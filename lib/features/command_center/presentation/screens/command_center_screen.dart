@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/constants/app_strings.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../core/theme/neumorphic_decorations.dart';
+import '../../../../core/widgets/royal/royal_kit.dart';
 import '../../../surveillance_system/domain/entities/app_tab.dart';
 import '../../../surveillance_system/domain/entities/camera_status.dart';
 import '../../../surveillance_system/presentation/controllers/aegis_provider.dart';
+import '../../../surveillance_system/presentation/widgets/add_device_wizard_dialog.dart';
 import '../widgets/asset_category_card.dart';
 import '../widgets/executive_header_card.dart';
 import '../widgets/favorite_camera_item.dart';
 import '../widgets/kpi_metrics_strip.dart';
-
-import '../../../surveillance_system/presentation/widgets/add_device_wizard_dialog.dart';
 
 /// Screen 1: Command Center executive dashboard.
 class CommandCenterScreen extends StatelessWidget {
@@ -21,7 +20,9 @@ class CommandCenterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AegisProvider>();
-    final primaryColor = AppColors.getPrimary(provider.isEmergency);
+    final isEmergency = provider.isEmergency;
+    final primaryAccent =
+        isEmergency ? AppPalette.crimsonAlert : AppPalette.cyanLight;
 
     final icons = [
       Icons.store_mall_directory_outlined,
@@ -30,31 +31,37 @@ class CommandCenterScreen extends StatelessWidget {
     ];
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const ExecutiveHeaderCard(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
           const KpiMetricsStrip(),
-          const SizedBox(height: 16),
+          const SizedBox(height: 14),
 
-          // Executive Action Chip & Search Field Row
+          // Executive Action Chip & Search Field Row (Royal UI Kit)
           Row(
             children: [
               Expanded(
-                child: Container(
+                child: RoyalGlassContainer(
                   height: 48,
                   padding: const EdgeInsets.symmetric(horizontal: 14),
-                  decoration: NeumorphicDecorations.softRaised(
-                    color: AppColors.clayCard,
-                    borderRadius: 16,
+                  borderRadius: 16,
+                  backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.7),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.1),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.search_rounded,
-                          color: AppColors.primaryBlue, size: 20),
+                      const Icon(
+                        Icons.search_rounded,
+                        color: AppPalette.cyanLight,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           AppStrings.searchPlaceholder,
@@ -62,7 +69,7 @@ class CommandCenterScreen extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: AppTypography.cairoRegular(
                             fontSize: 12,
-                            color: AppColors.textDarkTertiary,
+                            color: AppPalette.textLightMuted,
                           ),
                         ),
                       ),
@@ -71,36 +78,13 @@ class CommandCenterScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              InkWell(
-                onTap: () => AddDeviceWizardDialog.show(context),
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 14),
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryBlue.withValues(alpha: 0.35),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.add_business_rounded,
-                          color: Colors.white, size: 18),
-                      const SizedBox(width: 6),
-                      Text(
-                        'ربط كاميرات / موقع جديد',
-                        style: AppTypography.cairoBold(
-                            fontSize: 12, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
+              RoyalButton(
+                label: 'ربط موقع جديد',
+                icon: Icons.add_business_rounded,
+                variant: RoyalButtonVariant.primary,
+                height: 48,
+                borderRadius: 16,
+                onPressed: () => AddDeviceWizardDialog.show(context),
               ),
             ],
           ),
@@ -110,18 +94,39 @@ class CommandCenterScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                AppStrings.criticalAndFavorites,
-                style: AppTypography.cairoBold(
-                  fontSize: 14,
-                  color: AppColors.textPrimary,
-                ),
+              Row(
+                children: [
+                  Container(
+                    width: 4,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: primaryAccent,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    AppStrings.criticalAndFavorites,
+                    style: AppTypography.cairoBold(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
-              Text(
-                AppStrings.editFavorites,
-                style: AppTypography.cairoBold(
-                  fontSize: 11,
-                  color: primaryColor,
+              InkWell(
+                onTap: () {},
+                borderRadius: BorderRadius.circular(8),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  child: Text(
+                    AppStrings.editFavorites,
+                    style: AppTypography.cairoBold(
+                      fontSize: 11.5,
+                      color: primaryAccent,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -130,15 +135,18 @@ class CommandCenterScreen extends StatelessWidget {
 
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
             child: Row(
               children: provider.favoriteCameras.map((cam) {
                 final color = cam.status == CameraStatus.alert
-                    ? (provider.isEmergency ? AppColors.red : AppColors.amber)
-                    : primaryColor;
+                    ? (isEmergency
+                        ? AppPalette.crimsonAlert
+                        : AppPalette.amberWarning)
+                    : primaryAccent;
                 final isAlert = cam.status == CameraStatus.alert;
 
                 return Padding(
-                  padding: const EdgeInsets.only(left: 14),
+                  padding: const EdgeInsets.only(left: 12),
                   child: FavoriteCameraItem(
                     label: cam.name,
                     color: color,
@@ -155,18 +163,31 @@ class CommandCenterScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                AppStrings.assetsDistribution,
-                style: AppTypography.cairoBold(
-                  fontSize: 14,
-                  color: AppColors.textPrimary,
-                ),
+              Row(
+                children: [
+                  Container(
+                    width: 4,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: AppPalette.imperialGold,
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    AppStrings.assetsDistribution,
+                    style: AppTypography.cairoBold(
+                      fontSize: 14,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
               Text(
                 AppStrings.totalCamerasCount,
                 style: AppTypography.cairoBold(
-                  fontSize: 11,
-                  color: primaryColor,
+                  fontSize: 11.5,
+                  color: AppPalette.imperialGold,
                 ),
               ),
             ],
@@ -178,10 +199,11 @@ class CommandCenterScreen extends StatelessWidget {
             return AssetCategoryCard(
               category: category,
               icon: icons[index % icons.length],
-              primaryColor: primaryColor,
+              primaryColor: primaryAccent,
               onTap: () => provider.setSelectedTab(AppTab.hierarchy),
             );
           }),
+          const SizedBox(height: 100),
         ],
       ),
     );

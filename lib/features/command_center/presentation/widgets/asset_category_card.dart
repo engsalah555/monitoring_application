@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/royal/royal_glass.dart';
 import '../../../surveillance_system/domain/entities/asset_category.dart';
 
-import '../../../../core/theme/neumorphic_decorations.dart';
-
-/// Reusable Asset Category Distribution Card.
+/// Reusable Royal Asset Category Distribution Card.
 class AssetCategoryCard extends StatelessWidget {
   final AssetCategory category;
   final IconData icon;
@@ -22,70 +21,78 @@ class AssetCategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      decoration: NeumorphicDecorations.softRaised(
-        color: AppColors.clayCard,
-        borderRadius: 22,
+    return RoyalGlassContainer(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      borderRadius: 20,
+      backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.8),
+      border: Border.all(
+        color: Colors.white.withValues(alpha: 0.08),
+        width: 1,
       ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(22),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(22),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: Row(
+      onTap: onTap,
+      child: Row(
+        children: [
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              gradient: AppPalette.royalSapphireGradient,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                color: AppPalette.primary.withValues(alpha: 0.4),
+                width: 1.2,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: AppPalette.primary.withValues(alpha: 0.3),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Icon(icon, color: Colors.white, size: 22),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryBlue.withValues(alpha: 0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Icon(icon, color: Colors.white, size: 22),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        category.title,
-                        style: AppTypography.cairoBold(
-                          fontSize: 14,
-                          color: AppColors.textDarkPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 3),
-                      Text(
-                        category.subtitle,
-                        style: AppTypography.cairoRegular(
-                          fontSize: 11,
-                          color: AppColors.textDarkSecondary,
-                        ),
-                      ),
-                    ],
+                Text(
+                  category.title,
+                  style: AppTypography.cairoBold(
+                    fontSize: 14.5,
+                    color: Colors.white,
                   ),
                 ),
-                const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: AppColors.primaryBlue,
-                  size: 16,
+                const SizedBox(height: 3),
+                Text(
+                  category.subtitle,
+                  style: AppTypography.cairoRegular(
+                    fontSize: 11.5,
+                    color: AppPalette.textLightMuted,
+                  ),
                 ),
               ],
             ),
           ),
-        ),
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              color: AppPalette.cardDark.withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.08),
+              ),
+            ),
+            child: const Icon(
+              Icons.chevron_left_rounded,
+              color: AppPalette.cyanLight,
+              size: 20,
+            ),
+          ),
+        ],
       ),
     );
   }

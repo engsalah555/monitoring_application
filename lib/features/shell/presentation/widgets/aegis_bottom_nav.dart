@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../core/theme/neumorphic_decorations.dart';
+import '../../../../core/widgets/royal/royal_glass.dart';
 import '../../../surveillance_system/domain/entities/app_tab.dart';
 import '../../../surveillance_system/presentation/controllers/aegis_provider.dart';
 
-/// Cybernetic Glassmorphic Navigation Dock with Central Prominent Floating Command Orb.
+/// Royal Floating Frosted Glass Navigation Dock with Center Command Jewel Orb.
 class AegisBottomNav extends StatelessWidget {
   const AegisBottomNav({super.key});
 
@@ -27,26 +27,30 @@ class AegisBottomNav extends StatelessWidget {
               left: 14,
               right: 14,
               bottom: bottomPadding > 0 ? bottomPadding + 6 : 14,
-              top: 6,
+              top: 4,
             ),
             child: SizedBox(
-              height: 74,
+              height: 76,
               child: Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.bottomCenter,
                 children: [
-                  // Floating Neumorphic Dock Container
+                  // Floating Royal Frosted Glass Dock Container
                   Positioned(
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    height: 64,
-                    child: Container(
-                      decoration: NeumorphicDecorations.softRaised(
-                        color: AppColors.clayCard,
-                        borderRadius: 32,
+                    height: 66,
+                    child: RoyalGlassContainer(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      borderRadius: 30,
+                      blur: 24,
+                      backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.85),
+                      border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.14),
+                        width: 1.2,
                       ),
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      shadows: AppPalette.floatingDockShadow,
                       child: Row(
                         children: [
                           // Left Side Tabs
@@ -54,12 +58,12 @@ class AegisBottomNav extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                _NavTabItem(
+                                _RoyalNavTabItem(
                                   tab: AppTab.hierarchy,
                                   isSelected:
                                       state.index == AppTab.hierarchy.index,
                                 ),
-                                _NavTabItem(
+                                _RoyalNavTabItem(
                                   tab: AppTab.liveSingle,
                                   isSelected:
                                       state.index == AppTab.liveSingle.index,
@@ -68,20 +72,20 @@ class AegisBottomNav extends StatelessWidget {
                             ),
                           ),
 
-                          // Spacer for Raised Command Button
-                          const SizedBox(width: 60),
+                          // Spacer for Central Raised Command Button
+                          const SizedBox(width: 64),
 
                           // Right Side Tabs
                           Expanded(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                _NavTabItem(
+                                _RoyalNavTabItem(
                                   tab: AppTab.archive,
                                   isSelected:
                                       state.index == AppTab.archive.index,
                                 ),
-                                _NavTabItem(
+                                _RoyalNavTabItem(
                                   tab: AppTab.settings,
                                   isSelected:
                                       state.index == AppTab.settings.index,
@@ -94,11 +98,12 @@ class AegisBottomNav extends StatelessWidget {
                     ),
                   ),
 
-                  // Center Raised Floating Neumorphic Command Button
+                  // Center Raised Floating Royal Command Jewel Orb
                   Positioned(
                     top: 0,
-                    child: _CentralCommandOrb(
+                    child: _RoyalCommandJewelOrb(
                       isActive: isCommandActive,
+                      isEmergency: state.isEmergency,
                       onTap: () {
                         HapticFeedback.mediumImpact();
                         context.read<AegisProvider>().setSelectedTab(
@@ -117,47 +122,67 @@ class AegisBottomNav extends StatelessWidget {
   }
 }
 
-class _CentralCommandOrb extends StatelessWidget {
+class _RoyalCommandJewelOrb extends StatelessWidget {
   final bool isActive;
+  final bool isEmergency;
   final VoidCallback onTap;
 
-  const _CentralCommandOrb({required this.isActive, required this.onTap});
+  const _RoyalCommandJewelOrb({
+    required this.isActive,
+    required this.isEmergency,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Semantics(
       button: true,
       selected: isActive,
-      label: 'غرفة القيادة الرئيسية',
+      label: 'غرفة القيادة والسيطرة التنفيذية',
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedScale(
           scale: isActive ? 1.12 : 1.0,
-          duration: const Duration(milliseconds: 250),
+          duration: const Duration(milliseconds: 260),
           curve: Curves.easeOutBack,
           child: Container(
-            width: 58,
-            height: 58,
+            width: 60,
+            height: 60,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: AppColors.primaryGradient,
+              gradient: isEmergency
+                  ? AppPalette.emergencyGradient
+                  : AppPalette.royalSapphireGradient,
+              border: Border.all(
+                color: isEmergency
+                    ? AppPalette.crimsonAlert
+                    : (isActive ? AppPalette.imperialGold : Colors.white24),
+                width: 1.8,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryBlue.withValues(alpha: 0.45),
-                  blurRadius: 16,
+                  color: (isEmergency
+                          ? AppPalette.crimsonAlert
+                          : AppPalette.primary)
+                      .withValues(alpha: 0.5),
+                  blurRadius: 18,
                   offset: const Offset(0, 6),
                 ),
                 BoxShadow(
-                  color: Colors.white.withValues(alpha: 0.8),
+                  color: Colors.white.withValues(alpha: 0.25),
                   blurRadius: 8,
-                  offset: const Offset(-3, -3),
+                  offset: const Offset(-2, -2),
                 ),
               ],
             ),
-            child: const Icon(
-              Icons.dashboard_rounded,
-              color: Colors.white,
-              size: 26,
+            child: Center(
+              child: Icon(
+                isActive
+                    ? Icons.grid_view_rounded
+                    : Icons.dashboard_outlined,
+                color: Colors.white,
+                size: 26,
+              ),
             ),
           ),
         ),
@@ -166,11 +191,11 @@ class _CentralCommandOrb extends StatelessWidget {
   }
 }
 
-class _NavTabItem extends StatelessWidget {
+class _RoyalNavTabItem extends StatelessWidget {
   final AppTab tab;
   final bool isSelected;
 
-  const _NavTabItem({required this.tab, required this.isSelected});
+  const _RoyalNavTabItem({required this.tab, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -183,16 +208,22 @@ class _NavTabItem extends StatelessWidget {
           HapticFeedback.selectionClick();
           context.read<AegisProvider>().setSelectedTab(tab);
         },
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(18),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 220),
           padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
-          decoration: isSelected
-              ? BoxDecoration(
-                  color: AppColors.primaryBlue.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(16),
-                )
-              : null,
+          decoration: BoxDecoration(
+            color: isSelected
+                ? AppPalette.primary.withValues(alpha: 0.18)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(18),
+            border: isSelected
+                ? Border.all(
+                    color: AppPalette.primary.withValues(alpha: 0.35),
+                    width: 1,
+                  )
+                : Border.all(color: Colors.transparent, width: 1),
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
@@ -200,8 +231,8 @@ class _NavTabItem extends StatelessWidget {
               Icon(
                 isSelected ? tab.activeIcon : tab.icon,
                 color: isSelected
-                    ? AppColors.primaryBlue
-                    : AppColors.textDarkTertiary,
+                    ? AppPalette.cyanLight
+                    : AppPalette.textLightMuted,
                 size: 22,
               ),
               const SizedBox(height: 2),
@@ -210,11 +241,11 @@ class _NavTabItem extends StatelessWidget {
                 style: isSelected
                     ? AppTypography.cairoBold(
                         fontSize: 10,
-                        color: AppColors.primaryBlue,
+                        color: AppPalette.cyanLight,
                       )
-                    : AppTypography.cairoSemiBold(
+                    : AppTypography.cairoRegular(
                         fontSize: 9.5,
-                        color: AppColors.textDarkTertiary,
+                        color: AppPalette.textLightMuted,
                       ),
               ),
             ],
