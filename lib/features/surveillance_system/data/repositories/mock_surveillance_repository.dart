@@ -6,31 +6,52 @@ import '../../domain/entities/nvr_brand.dart';
 import '../../domain/entities/nvr_device.dart';
 import '../../domain/repositories/i_surveillance_repository.dart';
 
+import '../../domain/entities/site_category_type.dart';
+
 /// Mock implementation of [ISurveillanceRepository] supporting dynamic branch addition.
 class MockSurveillanceRepository implements ISurveillanceRepository {
   static final List<Branch> _mockBranches = [
     const Branch(
-      id: 'BR-01',
-      name: 'فرع مول وسط المدينة',
-      categoryType: 'المجمعات التجارية',
-      location: 'الرياض — حي العليا',
-      camerasCount: 32,
+      id: 'BR-HOME-01',
+      name: 'كاميرات المنزل والفيلا',
+      categoryType: 'المنازل والفلل',
+      siteType: SiteCategoryType.home,
+      location: 'الرياض — حي النخيل',
+      camerasCount: 8,
       nvrDevice: NvrDevice(
-        id: 'NVR-HIK-01',
-        brand: NvrBrand.hikvision,
-        ipAddress: '192.168.1.100',
+        id: 'NVR-EZVIZ-01',
+        brand: NvrBrand.ezviz,
+        ipAddress: '192.168.1.50',
         port: 554,
-        username: 'admin',
+        username: 'home_admin',
         password: '***',
-        channelsCount: 32,
+        channelsCount: 8,
       ),
     ),
     const Branch(
-      id: 'BR-02',
+      id: 'BR-STORE-01',
+      name: 'متجر السعادة للتجزئة',
+      categoryType: 'المتاجر والمحلات',
+      siteType: SiteCategoryType.store,
+      location: 'جدة — شارع التحلية',
+      camerasCount: 12,
+      nvrDevice: NvrDevice(
+        id: 'NVR-DAHUA-01',
+        brand: NvrBrand.dahua,
+        ipAddress: '192.168.2.80',
+        port: 554,
+        username: 'store_owner',
+        password: '***',
+        channelsCount: 16,
+      ),
+    ),
+    const Branch(
+      id: 'BR-WH-01',
       name: 'مستودع الميناء الرئيسي',
       categoryType: 'المستودعات والمخازن',
-      location: 'جدة — المنطقة الصناعية',
-      camerasCount: 16,
+      siteType: SiteCategoryType.warehouse,
+      location: 'الدمام — المنطقة الصناعية',
+      camerasCount: 24,
       nvrDevice: NvrDevice(
         id: 'NVR-DAHUA-02',
         brand: NvrBrand.dahua,
@@ -38,7 +59,24 @@ class MockSurveillanceRepository implements ISurveillanceRepository {
         port: 554,
         username: 'admin',
         password: '***',
-        channelsCount: 16,
+        channelsCount: 32,
+      ),
+    ),
+    const Branch(
+      id: 'BR-MALL-01',
+      name: 'فرع مول وسط المدينة',
+      categoryType: 'المجمعات والمولات',
+      siteType: SiteCategoryType.mall,
+      location: 'الرياض — حي العليا',
+      camerasCount: 48,
+      nvrDevice: NvrDevice(
+        id: 'NVR-HIK-01',
+        brand: NvrBrand.hikvision,
+        ipAddress: '192.168.1.100',
+        port: 554,
+        username: 'admin',
+        password: '***',
+        channelsCount: 64,
       ),
     ),
   ];

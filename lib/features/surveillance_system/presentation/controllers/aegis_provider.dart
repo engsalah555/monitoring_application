@@ -7,12 +7,15 @@ import '../../domain/entities/camera_node.dart';
 import '../../domain/entities/nvr_device.dart';
 import '../../domain/repositories/i_surveillance_repository.dart';
 
+import '../../domain/entities/site_category_type.dart';
+
 /// Central macro state controller for AEGIS Command Center.
 class AegisProvider extends ChangeNotifier {
   final ISurveillanceRepository _repository;
 
   bool _isEmergency = false;
   AppTab _selectedTab = AppTab.command;
+  SiteCategoryType _selectedCategoryType = SiteCategoryType.all;
   int _gridCount = 4;
 
   List<CameraNode> _favoriteCameras = const [];
@@ -25,6 +28,7 @@ class AegisProvider extends ChangeNotifier {
   bool get isEmergency => _isEmergency;
   AppTab get selectedTab => _selectedTab;
   int get selectedTabIndex => _selectedTab.index;
+  SiteCategoryType get selectedCategoryType => _selectedCategoryType;
   int get gridCount => _gridCount;
   bool get isLoading => _isLoading;
 
@@ -32,6 +36,15 @@ class AegisProvider extends ChangeNotifier {
   List<CameraNode> get zoneCameras => _zoneCameras;
   List<AssetCategory> get assetCategories => _assetCategories;
   List<Branch> get branches => _branches;
+
+  List<Branch> get filteredBranches {
+    if (_selectedCategoryType == SiteCategoryType.all) {
+      return _branches;
+    }
+    return _branches
+        .where((b) => b.siteType == _selectedCategoryType)
+        .toList();
+  }
 
   int get alertCount => _isEmergency ? 14 : 2;
 
@@ -86,6 +99,13 @@ class AegisProvider extends ChangeNotifier {
   void setGridCount(int count) {
     if (_gridCount != count) {
       _gridCount = count;
+      notifyListeners();
+    }
+  }
+
+  void setSelectedCategoryType(SiteCategoryType categoryType) {
+    if (_selectedCategoryType != categoryType) {
+      _selectedCategoryType = categoryType;
       notifyListeners();
     }
   }

@@ -6,6 +6,8 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../../core/widgets/radar_avatar_ring.dart';
 import '../../../surveillance_system/presentation/controllers/aegis_provider.dart';
 
+import '../../../../core/theme/neumorphic_decorations.dart';
+
 /// Executive Header Status Card Widget.
 class ExecutiveHeaderCard extends StatelessWidget {
   const ExecutiveHeaderCard({super.key});
@@ -16,16 +18,13 @@ class ExecutiveHeaderCard extends StatelessWidget {
       selector: (_, p) =>
           (isEmergency: p.isEmergency, statusText: p.systemStatusText),
       builder: (context, state, child) {
-        final primaryColor = AppColors.getPrimary(state.isEmergency);
-        final statusColor =
-            state.isEmergency ? AppColors.red : AppColors.green;
+        final statusColor = state.isEmergency ? AppColors.red : AppColors.green;
 
         return Container(
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: AppColors.panel,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.panelLine),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+          decoration: NeumorphicDecorations.softRaised(
+            color: AppColors.clayCard,
+            borderRadius: 24,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -36,16 +35,16 @@ class ExecutiveHeaderCard extends StatelessWidget {
                   Text(
                     AppStrings.greetingUser,
                     style: AppTypography.cairoBold(
-                      fontSize: 16,
-                      color: AppColors.textPrimary,
+                      fontSize: 16.5,
+                      color: AppColors.textDarkPrimary,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
                       Container(
-                        width: 8,
-                        height: 8,
+                        width: 9,
+                        height: 9,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: statusColor,
@@ -57,12 +56,12 @@ class ExecutiveHeaderCard extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const SizedBox(width: 6),
+                      const SizedBox(width: 8),
                       Text(
                         state.statusText,
                         style: AppTypography.cairoRegular(
-                          fontSize: 11.5,
-                          color: AppColors.textSecondary,
+                          fontSize: 12,
+                          color: AppColors.textDarkSecondary,
                         ),
                       ),
                     ],
@@ -71,15 +70,18 @@ class ExecutiveHeaderCard extends StatelessWidget {
               ),
               // Avatar with Radar Glow Ring
               RadarRingWidget(
-                size: 44,
-                borderColor: primaryColor,
+                size: 48,
+                borderColor: AppColors.primaryBlue,
                 child: Container(
-                  color: AppColors.panelRaised,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: AppColors.primaryGradient,
+                  ),
                   child: Center(
                     child: Text(
                       'أ ر',
                       style: AppTypography.cairoBold(
-                        fontSize: 13,
+                        fontSize: 14,
                         color: Colors.white,
                       ),
                     ),

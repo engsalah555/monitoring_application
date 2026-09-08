@@ -59,8 +59,7 @@ class CameraGridTile extends StatelessWidget {
               top: 6,
               right: 6,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                 decoration: BoxDecoration(
                   color: AppColors.bgPage.withValues(alpha: 0.7),
                   borderRadius: BorderRadius.circular(6),

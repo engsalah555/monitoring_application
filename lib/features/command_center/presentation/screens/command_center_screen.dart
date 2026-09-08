@@ -3,13 +3,16 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../hierarchy/presentation/widgets/add_branch_dialog.dart';
+import '../../../../core/theme/neumorphic_decorations.dart';
 import '../../../surveillance_system/domain/entities/app_tab.dart';
 import '../../../surveillance_system/domain/entities/camera_status.dart';
 import '../../../surveillance_system/presentation/controllers/aegis_provider.dart';
 import '../widgets/asset_category_card.dart';
 import '../widgets/executive_header_card.dart';
 import '../widgets/favorite_camera_item.dart';
+import '../widgets/kpi_metrics_strip.dart';
+
+import '../../../surveillance_system/presentation/widgets/add_device_wizard_dialog.dart';
 
 /// Screen 1: Command Center executive dashboard.
 class CommandCenterScreen extends StatelessWidget {
@@ -34,52 +37,66 @@ class CommandCenterScreen extends StatelessWidget {
           const ExecutiveHeaderCard(),
           const SizedBox(height: 16),
 
+          const KpiMetricsStrip(),
+          const SizedBox(height: 16),
+
           // Executive Action Chip & Search Field Row
           Row(
             children: [
               Expanded(
                 child: Container(
-                  height: 44,
+                  height: 48,
                   padding: const EdgeInsets.symmetric(horizontal: 14),
-                  decoration: BoxDecoration(
-                    color: AppColors.panel.withValues(alpha: 0.6),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.panelLine),
+                  decoration: NeumorphicDecorations.softRaised(
+                    color: AppColors.clayCard,
+                    borderRadius: 16,
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.search, color: primaryColor, size: 18),
-                      const SizedBox(width: 10),
-                      Text(
-                        AppStrings.searchPlaceholder,
-                        style: AppTypography.cairoRegular(
-                          fontSize: 11.5,
-                          color: AppColors.textSecondary,
+                      const Icon(Icons.search_rounded,
+                          color: AppColors.primaryBlue, size: 20),
+                      Expanded(
+                        child: Text(
+                          AppStrings.searchPlaceholder,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTypography.cairoRegular(
+                            fontSize: 12,
+                            color: AppColors.textDarkTertiary,
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               InkWell(
-                onTap: () => AddBranchDialog.show(context),
-                borderRadius: BorderRadius.circular(12),
+                onTap: () => AddDeviceWizardDialog.show(context),
+                borderRadius: BorderRadius.circular(16),
                 child: Container(
-                  height: 44,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  height: 48,
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
                   decoration: BoxDecoration(
-                    color: AppColors.panelRaised,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: primaryColor.withValues(alpha: 0.4)),
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryBlue.withValues(alpha: 0.35),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.add_business_outlined, color: primaryColor, size: 18),
+                      const Icon(Icons.add_business_rounded,
+                          color: Colors.white, size: 18),
                       const SizedBox(width: 6),
                       Text(
-                        'ربط فرع',
-                        style: AppTypography.cairoBold(fontSize: 11, color: primaryColor),
+                        'ربط كاميرات / موقع جديد',
+                        style: AppTypography.cairoBold(
+                            fontSize: 12, color: Colors.white),
                       ),
                     ],
                   ),

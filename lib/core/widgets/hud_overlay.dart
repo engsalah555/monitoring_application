@@ -71,8 +71,8 @@ class _HudOverlayWidgetState extends State<HudOverlayWidget>
           // Subtle scanlines overlay isolated in RepaintBoundary
           Positioned.fill(
             child: CustomPaint(
-              painter: ScanlinePainter(
-                  color: primaryColor.withValues(alpha: 0.04)),
+              painter:
+                  ScanlinePainter(color: primaryColor.withValues(alpha: 0.04)),
             ),
           ),
           // HUD Bounding Frame Box

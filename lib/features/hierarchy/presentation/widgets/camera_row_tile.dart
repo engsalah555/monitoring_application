@@ -4,6 +4,8 @@ import '../../../../core/theme/app_typography.dart';
 import '../../../surveillance_system/domain/entities/camera_node.dart';
 import '../../../surveillance_system/domain/entities/camera_status.dart';
 
+import '../../../../core/theme/neumorphic_decorations.dart';
+
 /// Reusable Camera List Row Tile Widget.
 class CameraRowTile extends StatelessWidget {
   final CameraNode camera;
@@ -22,12 +24,11 @@ class CameraRowTile extends StatelessWidget {
     final isOffline = camera.status == CameraStatus.offline;
     final isAlert = camera.status == CameraStatus.alert;
 
-    final primaryColor = AppColors.getPrimary(isEmergency);
     final statusColor = isOffline
-        ? AppColors.textTertiary
+        ? AppColors.textDarkTertiary
         : (isAlert
             ? (isEmergency ? AppColors.red : AppColors.amber)
-            : primaryColor);
+            : AppColors.primaryBlue);
 
     final statusText = isOffline
         ? 'غير متصل · منذ ساعتين'
@@ -36,65 +37,85 @@ class CameraRowTile extends StatelessWidget {
             : 'بث مباشر · بدقة ${camera.resolution}');
 
     return Container(
-      decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: AppColors.panelLine)),
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: NeumorphicDecorations.softRaised(
+        color: AppColors.clayCard,
+        borderRadius: 20,
       ),
-      child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(vertical: 4),
-        onTap: onTap,
-        leading: Container(
-          width: 60,
-          height: 45,
-          decoration: BoxDecoration(
-            color: isOffline ? AppColors.bgPage : AppColors.panelRaised,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: AppColors.panelLine),
-          ),
-          child: Center(
-            child: Icon(
-              isOffline ? Icons.videocam_off : Icons.videocam,
-              color: statusColor,
-              size: 20,
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(20),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(20),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            child: Row(
+              children: [
+                Container(
+                  width: 56,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    color: isOffline
+                        ? AppColors.clayBg
+                        : AppColors.primaryBlue.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      isOffline
+                          ? Icons.videocam_off_rounded
+                          : Icons.videocam_rounded,
+                      color: statusColor,
+                      size: 22,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        camera.name,
+                        style: AppTypography.cairoBold(
+                          fontSize: 13.5,
+                          color: AppColors.textDarkPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Row(
+                        children: [
+                          Container(
+                            width: 7,
+                            height: 7,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: statusColor,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            statusText,
+                            style: AppTypography.cairoRegular(
+                              fontSize: 11,
+                              color: AppColors.textDarkSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(
+                  Icons.arrow_back_ios_new_rounded,
+                  color: AppColors.primaryBlue,
+                  size: 16,
+                ),
+              ],
             ),
           ),
         ),
-        title: Text(
-          camera.name,
-          style: AppTypography.cairoSemiBold(
-            fontSize: 12.5,
-            color: AppColors.textPrimary,
-          ),
-        ),
-        subtitle: Row(
-          children: [
-            Container(
-              width: 6,
-              height: 6,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: statusColor,
-                boxShadow: isOffline
-                    ? []
-                    : [
-                        BoxShadow(
-                          color: statusColor.withValues(alpha: 0.8),
-                          blurRadius: 4,
-                        )
-                      ],
-              ),
-            ),
-            const SizedBox(width: 6),
-            Text(
-              statusText,
-              style: AppTypography.cairoRegular(
-                fontSize: 10.5,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          ],
-        ),
-        trailing: const Icon(Icons.chevron_left,
-            color: AppColors.textTertiary, size: 20),
       ),
     );
   }

@@ -11,25 +11,28 @@ class AegisAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AegisAppBar({super.key});
 
   @override
-  Size get preferredSize => const Size.fromHeight(66);
+  Size get preferredSize => const Size.fromHeight(72);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: AppColors.panel.withValues(alpha: 0.85),
-        border: const Border(
-          bottom: BorderSide(color: AppColors.panelLine, width: 1.5),
-        ),
+      decoration: const BoxDecoration(
+        color: AppColors.darkIndigo,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0x33000000),
+            blurRadius: 16,
+            offset: Offset(0, 4),
+          ),
+        ],
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: SafeArea(
         child: Selector<AegisProvider, ({bool isEmergency, int alertCount})>(
           selector: (_, p) =>
               (isEmergency: p.isEmergency, alertCount: p.alertCount),
           builder: (context, state, child) {
-            final primaryColor = AppColors.getPrimary(state.isEmergency);
-
             return Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -37,28 +40,27 @@ class AegisAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Row(
                   children: [
                     Container(
-                      width: 32,
-                      height: 32,
+                      width: 38,
+                      height: 38,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        gradient: LinearGradient(
-                          colors: [
-                            primaryColor,
-                            const Color(0xFF1B4B5C),
-                          ],
-                        ),
-                      ),
-                      child: Center(
-                        child: Text(
-                          'A',
-                          style: AppTypography.cairoBold(
-                            fontSize: 16,
-                            color: Colors.black,
+                        gradient: AppColors.primaryGradient,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primaryBlue.withValues(alpha: 0.4),
+                            blurRadius: 10,
                           ),
+                        ],
+                      ),
+                      child: const Center(
+                        child: Icon(
+                          Icons.videocam_rounded,
+                          color: Colors.white,
+                          size: 22,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -66,15 +68,15 @@ class AegisAppBar extends StatelessWidget implements PreferredSizeWidget {
                         Text(
                           AppStrings.brandTitle,
                           style: AppTypography.cairoBold(
-                            fontSize: 13,
-                            color: AppColors.textPrimary,
+                            fontSize: 14,
+                            color: Colors.white,
                           ),
                         ),
                         Text(
                           AppStrings.brandSubtitle,
                           style: AppTypography.cairoRegular(
-                            fontSize: 9.5,
-                            color: AppColors.textSecondary,
+                            fontSize: 10,
+                            color: AppColors.textLightSecondary,
                           ),
                         ),
                       ],
@@ -82,18 +84,18 @@ class AegisAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 ),
 
-                // Executive Header Actions & Emergency Mode Trigger & Settings Trigger
+                // Header Actions
                 Row(
                   children: [
                     // Alerts Counter Badge
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                          horizontal: 10, vertical: 5),
                       decoration: BoxDecoration(
                         color: state.isEmergency
-                            ? AppColors.redDim
-                            : AppColors.amberDim,
-                        borderRadius: BorderRadius.circular(6),
+                            ? AppColors.red.withValues(alpha: 0.2)
+                            : AppColors.amber.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: state.isEmergency
                               ? AppColors.red
@@ -103,56 +105,57 @@ class AegisAppBar extends StatelessWidget implements PreferredSizeWidget {
                       child: Text(
                         '${state.alertCount} تنبيهات',
                         style: AppTypography.cairoBold(
-                          fontSize: 10.5,
+                          fontSize: 11,
                           color: state.isEmergency
                               ? AppColors.red
                               : AppColors.amber,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: 8),
 
                     // Toggle Emergency Mode Button
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: state.isEmergency
-                            ? AppColors.redDim
-                            : AppColors.panelRaised,
-                        foregroundColor: state.isEmergency
-                            ? Colors.white
-                            : AppColors.textPrimary,
-                        side: BorderSide(
+                    InkWell(
+                      onTap: () =>
+                          context.read<AegisProvider>().toggleEmergencyMode(),
+                      borderRadius: BorderRadius.circular(12),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 6),
+                        decoration: BoxDecoration(
                           color: state.isEmergency
                               ? AppColors.red
-                              : AppColors.panelLine,
+                              : AppColors.darkIndigoSurface,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: state.isEmergency
+                                ? AppColors.red
+                                : Colors.white12,
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 6),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        elevation: 0,
-                      ),
-                      onPressed: () =>
-                          context.read<AegisProvider>().toggleEmergencyMode(),
-                      child: Text(
-                        state.isEmergency
-                            ? AppStrings.emergencyCancel
-                            : AppStrings.emergencySimulate,
-                        style: AppTypography.cairoBold(
-                          fontSize: 10.5,
-                          color: state.isEmergency
-                              ? Colors.white
-                              : AppColors.textPrimary,
+                        child: Text(
+                          state.isEmergency
+                              ? AppStrings.emergencyCancel
+                              : AppStrings.emergencySimulate,
+                          style: AppTypography.cairoBold(
+                            fontSize: 11,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 4),
 
-                    // Direct Settings Button Trigger
+                    // Settings Icon Button
                     IconButton(
-                      icon: const Icon(Icons.settings_outlined, color: AppColors.textPrimary, size: 20),
-                      onPressed: () => context.read<AegisProvider>().setSelectedTab(AppTab.settings),
+                      icon: const Icon(
+                        Icons.settings_outlined,
+                        color: Colors.white,
+                        size: 22,
+                      ),
+                      onPressed: () => context
+                          .read<AegisProvider>()
+                          .setSelectedTab(AppTab.settings),
                       tooltip: 'إعدادات المنظومة',
                     ),
                   ],

@@ -10,6 +10,8 @@ import '../widgets/camera_row_tile.dart';
 import '../widgets/floor_map_view.dart';
 import '../widgets/hierarchy_breadcrumb.dart';
 
+import '../../../../core/theme/neumorphic_decorations.dart';
+
 /// Screen 2: Hierarchy and Asset locations list screen.
 class HierarchyScreen extends StatefulWidget {
   const HierarchyScreen({super.key});
@@ -24,19 +26,15 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
   @override
   Widget build(BuildContext context) {
     final provider = context.watch<AegisProvider>();
-    final primaryColor = AppColors.getPrimary(provider.isEmergency);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        HierarchyBreadcrumb(primaryColor: primaryColor),
+        const HierarchyBreadcrumb(primaryColor: AppColors.primaryBlue),
 
         // Section Title Header with Add Branch Button
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-          decoration: const BoxDecoration(
-            border: Border(bottom: BorderSide(color: AppColors.panelLine)),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -46,59 +44,72 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
                   Text(
                     AppStrings.zoneTitle,
                     style: AppTypography.cairoBold(
-                      fontSize: 16,
-                      color: AppColors.textPrimary,
+                      fontSize: 16.5,
+                      color: AppColors.textDarkPrimary,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     AppStrings.zoneSubtitle,
                     style: AppTypography.cairoRegular(
-                      fontSize: 11.5,
-                      color: AppColors.textSecondary,
+                      fontSize: 12,
+                      color: AppColors.textDarkSecondary,
                     ),
                   ),
                 ],
               ),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.panelRaised,
-                  side: BorderSide(color: primaryColor),
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  elevation: 0,
+              InkWell(
+                onTap: () => AddBranchDialog.show(context),
+                borderRadius: BorderRadius.circular(14),
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    gradient: AppColors.primaryGradient,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors.primaryBlue.withValues(alpha: 0.35),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.add_rounded,
+                          color: Colors.white, size: 18),
+                      const SizedBox(width: 4),
+                      Text(
+                        'ربط NVR',
+                        style: AppTypography.cairoBold(
+                            fontSize: 11.5, color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
-                icon: Icon(Icons.add, color: primaryColor, size: 16),
-                label: Text(
-                  'ربط NVR',
-                  style: AppTypography.cairoBold(fontSize: 11, color: primaryColor),
-                ),
-                onPressed: () => AddBranchDialog.show(context),
               ),
             ],
           ),
         ),
 
-        // Segmented Control
+        // Neumorphic Segmented Control
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-          padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            color: AppColors.panel,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppColors.panelLine),
+          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          padding: const EdgeInsets.all(4),
+          decoration: NeumorphicDecorations.softRaised(
+            color: AppColors.clayCard,
+            borderRadius: 18,
           ),
           child: Row(
             children: [
               _buildSegmentTab(
                 index: 0,
                 label: AppStrings.camListTab,
-                primaryColor: primaryColor,
               ),
               _buildSegmentTab(
                 index: 1,
                 label: AppStrings.floorMapTab,
-                primaryColor: primaryColor,
               ),
             ],
           ),
@@ -108,7 +119,8 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
         Expanded(
           child: _segmentedIndex == 0
               ? ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
                   itemCount: provider.zoneCameras.length,
                   itemBuilder: (context, index) {
                     final camera = provider.zoneCameras[index];
@@ -119,7 +131,7 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
                     );
                   },
                 )
-              : FloorMapView(primaryColor: primaryColor),
+              : const FloorMapView(primaryColor: AppColors.primaryBlue),
         ),
       ],
     );
@@ -128,24 +140,33 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
   Widget _buildSegmentTab({
     required int index,
     required String label,
-    required Color primaryColor,
   }) {
     final isSelected = _segmentedIndex == index;
     return Expanded(
       child: GestureDetector(
         onTap: () => setState(() => _segmentedIndex = index),
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          decoration: BoxDecoration(
-            color: isSelected ? AppColors.panelRaised : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
-          ),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 200),
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: isSelected
+              ? BoxDecoration(
+                  gradient: AppColors.primaryGradient,
+                  borderRadius: BorderRadius.circular(14),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.primaryBlue.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                )
+              : null,
           child: Text(
             label,
             textAlign: TextAlign.center,
             style: AppTypography.cairoBold(
-              fontSize: 11,
-              color: isSelected ? primaryColor : AppColors.textSecondary,
+              fontSize: 11.5,
+              color: isSelected ? Colors.white : AppColors.textDarkSecondary,
             ),
           ),
         ),

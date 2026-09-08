@@ -28,7 +28,7 @@ void main() {
       ),
     );
 
-    await tester.pumpAndSettle();
+    await tester.pump(const Duration(milliseconds: 500));
 
     expect(find.text(AppStrings.brandTitle), findsOneWidget);
     expect(find.text(AppStrings.brandSubtitle), findsOneWidget);

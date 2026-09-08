@@ -12,6 +12,11 @@ enum NvrBrand {
     code: 'DAHUA',
     icon: Icons.security,
   ),
+  ezviz(
+    label: 'EZVIZ / Imou / كاميرات منزلية',
+    code: 'EZVIZ',
+    icon: Icons.home_outlined,
+  ),
   onvif(
     label: 'ONVIF Standard (بروتوكول عام)',
     code: 'ONVIF',

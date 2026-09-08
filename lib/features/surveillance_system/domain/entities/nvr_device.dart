@@ -28,6 +28,8 @@ class NvrDevice {
         return 'rtsp://$username:$password@$ipAddress:$port/Streaming/Channels/101';
       case NvrBrand.dahua:
         return 'rtsp://$username:$password@$ipAddress:$port/cam/realmonitor?channel=1&subtype=0';
+      case NvrBrand.ezviz:
+        return 'rtsp://$username:$password@$ipAddress:$port/h264/ch1/main/av_stream';
       case NvrBrand.onvif:
         return 'rtsp://$username:$password@$ipAddress:$port/onvif1';
       case NvrBrand.customRtsp:

@@ -1,9 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/theme/neumorphic_decorations.dart';
 import '../../../surveillance_system/domain/entities/app_tab.dart';
 import '../../../surveillance_system/presentation/controllers/aegis_provider.dart';
 
@@ -16,129 +16,94 @@ class AegisBottomNav extends StatelessWidget {
     final bottomPadding = MediaQuery.paddingOf(context).bottom;
 
     return Selector<AegisProvider, ({int index, bool isEmergency})>(
-      selector: (_, p) => (
-        index: p.selectedTabIndex,
-        isEmergency: p.isEmergency,
-      ),
+      selector: (_, p) =>
+          (index: p.selectedTabIndex, isEmergency: p.isEmergency),
       builder: (context, state, child) {
-        final primaryColor = AppColors.getPrimary(state.isEmergency);
-        final primaryDimColor = AppColors.getPrimaryDim(state.isEmergency);
         final isCommandActive = state.index == AppTab.command.index;
 
         return RepaintBoundary(
           child: Padding(
             padding: EdgeInsets.only(
-              left: 12,
-              right: 12,
-              bottom: bottomPadding > 0 ? bottomPadding + 4 : 12,
-              top: 4,
+              left: 14,
+              right: 14,
+              bottom: bottomPadding > 0 ? bottomPadding + 6 : 14,
+              top: 6,
             ),
             child: SizedBox(
-              height: 72,
+              height: 74,
               child: Stack(
                 clipBehavior: Clip.none,
                 alignment: Alignment.bottomCenter,
                 children: [
-                  // Floating Glass Dock Base Container
+                  // Floating Neumorphic Dock Container
                   Positioned(
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    height: 60,
+                    height: 64,
                     child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(28),
-                        boxShadow: [
-                          BoxShadow(
-                            color: primaryColor.withValues(alpha: 0.15),
-                            blurRadius: 20,
-                            spreadRadius: 1,
-                            offset: const Offset(0, 8),
-                          ),
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.4),
-                            blurRadius: 12,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
+                      decoration: NeumorphicDecorations.softRaised(
+                        color: AppColors.clayCard,
+                        borderRadius: 32,
                       ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(28),
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppColors.panel.withValues(alpha: 0.8),
-                              borderRadius: BorderRadius.circular(28),
-                              border: Border.all(
-                                color: primaryColor.withValues(alpha: 0.28),
-                                width: 1.2,
-                              ),
-                            ),
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                      child: Row(
+                        children: [
+                          // Left Side Tabs
+                          Expanded(
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
-                                // Left Side Tabs: Hierarchy & Live Single
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      _NavTabItem(
-                                        tab: AppTab.hierarchy,
-                                        isSelected: state.index == AppTab.hierarchy.index,
-                                        primaryColor: primaryColor,
-                                        primaryDimColor: primaryDimColor,
-                                      ),
-                                      _NavTabItem(
-                                        tab: AppTab.liveSingle,
-                                        isSelected: state.index == AppTab.liveSingle.index,
-                                        primaryColor: primaryColor,
-                                        primaryDimColor: primaryDimColor,
-                                      ),
-                                    ],
-                                  ),
+                                _NavTabItem(
+                                  tab: AppTab.hierarchy,
+                                  isSelected:
+                                      state.index == AppTab.hierarchy.index,
                                 ),
-
-                                // Center Spacer for Raised Command Orb Button
-                                const SizedBox(width: 58),
-
-                                // Right Side Tabs: Archive & Settings
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      _NavTabItem(
-                                        tab: AppTab.archive,
-                                        isSelected: state.index == AppTab.archive.index,
-                                        primaryColor: primaryColor,
-                                        primaryDimColor: primaryDimColor,
-                                      ),
-                                      _NavTabItem(
-                                        tab: AppTab.settings,
-                                        isSelected: state.index == AppTab.settings.index,
-                                        primaryColor: primaryColor,
-                                        primaryDimColor: primaryDimColor,
-                                      ),
-                                    ],
-                                  ),
+                                _NavTabItem(
+                                  tab: AppTab.liveSingle,
+                                  isSelected:
+                                      state.index == AppTab.liveSingle.index,
                                 ),
                               ],
                             ),
                           ),
-                        ),
+
+                          // Spacer for Raised Command Button
+                          const SizedBox(width: 60),
+
+                          // Right Side Tabs
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                _NavTabItem(
+                                  tab: AppTab.archive,
+                                  isSelected:
+                                      state.index == AppTab.archive.index,
+                                ),
+                                _NavTabItem(
+                                  tab: AppTab.settings,
+                                  isSelected:
+                                      state.index == AppTab.settings.index,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ),
 
-                  // Center Raised Floating Command Orb Button
+                  // Center Raised Floating Neumorphic Command Button
                   Positioned(
                     top: 0,
                     child: _CentralCommandOrb(
                       isActive: isCommandActive,
-                      primaryColor: primaryColor,
                       onTap: () {
                         HapticFeedback.mediumImpact();
-                        context.read<AegisProvider>().setSelectedTab(AppTab.command);
+                        context.read<AegisProvider>().setSelectedTab(
+                              AppTab.command,
+                            );
                       },
                     ),
                   ),
@@ -152,17 +117,11 @@ class AegisBottomNav extends StatelessWidget {
   }
 }
 
-/// Prominent Raised Floating Cybernetic Command Orb Button.
 class _CentralCommandOrb extends StatelessWidget {
   final bool isActive;
-  final Color primaryColor;
   final VoidCallback onTap;
 
-  const _CentralCommandOrb({
-    required this.isActive,
-    required this.primaryColor,
-    required this.onTap,
-  });
+  const _CentralCommandOrb({required this.isActive, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -177,32 +136,27 @@ class _CentralCommandOrb extends StatelessWidget {
           duration: const Duration(milliseconds: 250),
           curve: Curves.easeOutBack,
           child: Container(
-            width: 56,
-            height: 56,
+            width: 58,
+            height: 58,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: isActive
-                    ? [primaryColor, const Color(0xFF1B4B5C)]
-                    : [AppColors.panelRaised, AppColors.panel],
-              ),
-              border: Border.all(
-                color: isActive ? Colors.white : primaryColor.withValues(alpha: 0.5),
-                width: 2.0,
-              ),
+              gradient: AppColors.primaryGradient,
               boxShadow: [
                 BoxShadow(
-                  color: primaryColor.withValues(alpha: isActive ? 0.45 : 0.2),
-                  blurRadius: isActive ? 16 : 8,
-                  spreadRadius: isActive ? 2 : 0,
+                  color: AppColors.primaryBlue.withValues(alpha: 0.45),
+                  blurRadius: 16,
+                  offset: const Offset(0, 6),
+                ),
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: 0.8),
+                  blurRadius: 8,
+                  offset: const Offset(-3, -3),
                 ),
               ],
             ),
-            child: Icon(
+            child: const Icon(
               Icons.dashboard_rounded,
-              color: isActive ? Colors.black : primaryColor,
+              color: Colors.white,
               size: 26,
             ),
           ),
@@ -215,15 +169,8 @@ class _CentralCommandOrb extends StatelessWidget {
 class _NavTabItem extends StatelessWidget {
   final AppTab tab;
   final bool isSelected;
-  final Color primaryColor;
-  final Color primaryDimColor;
 
-  const _NavTabItem({
-    required this.tab,
-    required this.isSelected,
-    required this.primaryColor,
-    required this.primaryDimColor,
-  });
+  const _NavTabItem({required this.tab, required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -237,53 +184,38 @@ class _NavTabItem extends StatelessWidget {
           context.read<AegisProvider>().setSelectedTab(tab);
         },
         borderRadius: BorderRadius.circular(16),
-        splashColor: primaryColor.withValues(alpha: 0.15),
-        highlightColor: primaryColor.withValues(alpha: 0.08),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          curve: Curves.fastOutSlowIn,
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-          decoration: BoxDecoration(
-            color: isSelected ? primaryDimColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: isSelected
-                  ? primaryColor.withValues(alpha: 0.35)
-                  : Colors.transparent,
-              width: 1.0,
-            ),
-          ),
+          duration: const Duration(milliseconds: 220),
+          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+          decoration: isSelected
+              ? BoxDecoration(
+                  color: AppColors.primaryBlue.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(16),
+                )
+              : null,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              AnimatedScale(
-                scale: isSelected ? 1.15 : 1.0,
-                duration: const Duration(milliseconds: 200),
-                child: Icon(
-                  isSelected ? tab.activeIcon : tab.icon,
-                  color: isSelected ? primaryColor : AppColors.textTertiary,
-                  size: 20,
-                ),
+              Icon(
+                isSelected ? tab.activeIcon : tab.icon,
+                color: isSelected
+                    ? AppColors.primaryBlue
+                    : AppColors.textDarkTertiary,
+                size: 22,
               ),
               const SizedBox(height: 2),
-              AnimatedDefaultTextStyle(
-                duration: const Duration(milliseconds: 200),
+              Text(
+                tab.label,
                 style: isSelected
                     ? AppTypography.cairoBold(
-                        fontSize: 9.5,
-                        color: primaryColor,
+                        fontSize: 10,
+                        color: AppColors.primaryBlue,
                       )
                     : AppTypography.cairoSemiBold(
-                        fontSize: 9.0,
-                        color: AppColors.textTertiary,
+                        fontSize: 9.5,
+                        color: AppColors.textDarkTertiary,
                       ),
-                child: Text(
-                  tab.label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                ),
               ),
             ],
           ),
