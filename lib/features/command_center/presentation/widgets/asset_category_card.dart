@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_palette.dart';
-import '../../../../core/theme/app_typography.dart';
-import '../../../../core/widgets/royal/royal_glass.dart';
+import '../../../../core/widgets/layout/executive_list_tile.dart';
 import '../../../surveillance_system/domain/entities/asset_category.dart';
 
-/// Reusable Royal Asset Category Distribution Card.
+/// Standardized Asset Category Distribution Card built on ExecutiveListTile.
 class AssetCategoryCard extends StatelessWidget {
   final AssetCategory category;
   final IconData icon;
@@ -21,78 +20,47 @@ class AssetCategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RoyalGlassContainer(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-      borderRadius: 20,
-      backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.8),
-      border: Border.all(
-        color: Colors.white.withValues(alpha: 0.08),
-        width: 1,
-      ),
+    return ExecutiveListTile(
+      title: category.title,
+      subtitle: category.subtitle,
       onTap: onTap,
-      child: Row(
-        children: [
-          Container(
-            width: 48,
-            height: 48,
-            decoration: BoxDecoration(
-              gradient: AppPalette.royalSapphireGradient,
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: AppPalette.primary.withValues(alpha: 0.4),
-                width: 1.2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppPalette.primary.withValues(alpha: 0.3),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            child: Icon(icon, color: Colors.white, size: 22),
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      leading: Container(
+        width: 46,
+        height: 46,
+        decoration: BoxDecoration(
+          gradient: AppPalette.royalSapphireGradient,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: AppPalette.primary.withValues(alpha: 0.4),
+            width: 1.2,
           ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  category.title,
-                  style: AppTypography.cairoBold(
-                    fontSize: 14.5,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 3),
-                Text(
-                  category.subtitle,
-                  style: AppTypography.cairoRegular(
-                    fontSize: 11.5,
-                    color: AppPalette.textLightMuted,
-                  ),
-                ),
-              ],
+          boxShadow: [
+            BoxShadow(
+              color: AppPalette.primary.withValues(alpha: 0.25),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
+          ],
+        ),
+        child: Icon(icon, color: Colors.white, size: 20),
+      ),
+      trailing: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          color: AppPalette.surfaceDark,
+          borderRadius: BorderRadius.circular(9),
+          border: Border.all(
+            color: Colors.white.withValues(alpha: 0.08),
           ),
-          Container(
-            width: 32,
-            height: 32,
-            decoration: BoxDecoration(
-              color: AppPalette.cardDark.withValues(alpha: 0.8),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.08),
-              ),
-            ),
-            child: const Icon(
-              Icons.chevron_left_rounded,
-              color: AppPalette.cyanLight,
-              size: 20,
-            ),
-          ),
-        ],
+        ),
+        child: const Icon(
+          Icons.chevron_left_rounded,
+          color: AppPalette.cyanLight,
+          size: 18,
+        ),
       ),
     );
   }

@@ -17,6 +17,8 @@ class RoyalGlassContainer extends StatelessWidget {
   final double? width;
   final double? height;
 
+  final bool enableBlur;
+
   const RoyalGlassContainer({
     super.key,
     required this.child,
@@ -24,6 +26,7 @@ class RoyalGlassContainer extends StatelessWidget {
     this.padding,
     this.margin,
     this.blur = 18,
+    this.enableBlur = false, // Defaults to false for high-performance 60fps rendering in lists
     this.backgroundColor,
     this.gradient,
     this.border,
@@ -35,27 +38,31 @@ class RoyalGlassContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget innerBox = Container(
+      width: width,
+      height: height,
+      padding: padding ?? const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: backgroundColor ?? AppPalette.cardDark.withValues(alpha: 0.85),
+        gradient: gradient,
+        borderRadius: BorderRadius.circular(borderRadius),
+        border: border ??
+            Border.all(
+              color: Colors.white.withValues(alpha: 0.12),
+              width: 1,
+            ),
+      ),
+      child: child,
+    );
+
     Widget content = ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
-        child: Container(
-          width: width,
-          height: height,
-          padding: padding ?? const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: backgroundColor ?? AppPalette.cardDark.withValues(alpha: 0.72),
-            gradient: gradient,
-            borderRadius: BorderRadius.circular(borderRadius),
-            border: border ??
-                Border.all(
-                  color: Colors.white.withValues(alpha: 0.12),
-                  width: 1,
-                ),
-          ),
-          child: child,
-        ),
-      ),
+      child: (enableBlur && blur > 0)
+          ? BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: blur, sigmaY: blur),
+              child: innerBox,
+            )
+          : innerBox,
     );
 
     if (shadows != null && shadows!.isNotEmpty) {

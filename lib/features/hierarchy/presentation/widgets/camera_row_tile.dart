@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_typography.dart';
+import '../../../../core/theme/app_palette.dart';
+import '../../../../core/widgets/layout/executive_list_tile.dart';
 import '../../../surveillance_system/domain/entities/camera_node.dart';
 import '../../../surveillance_system/domain/entities/camera_status.dart';
 
-import '../../../../core/theme/neumorphic_decorations.dart';
-
-/// Reusable Camera List Row Tile Widget.
+/// Standardized Camera List Row Tile Widget built on ExecutiveListTile.
 class CameraRowTile extends StatelessWidget {
   final CameraNode camera;
   final bool isEmergency;
@@ -25,10 +23,10 @@ class CameraRowTile extends StatelessWidget {
     final isAlert = camera.status == CameraStatus.alert;
 
     final statusColor = isOffline
-        ? AppColors.textDarkTertiary
+        ? AppPalette.textLightMuted
         : (isAlert
-            ? (isEmergency ? AppColors.red : AppColors.amber)
-            : AppColors.primaryBlue);
+            ? (isEmergency ? AppPalette.crimsonAlert : AppPalette.amberWarning)
+            : AppPalette.primary);
 
     final statusText = isOffline
         ? 'غير متصل · منذ ساعتين'
@@ -36,86 +34,58 @@ class CameraRowTile extends StatelessWidget {
             ? (isEmergency ? 'اختراق أمني · كشف حركة' : 'تنبيه حركة')
             : 'بث مباشر · بدقة ${camera.resolution}');
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: NeumorphicDecorations.softRaised(
-        color: AppColors.clayCard,
-        borderRadius: 20,
+    return ExecutiveListTile(
+      title: camera.name,
+      onTap: onTap,
+      leading: Container(
+        width: 48,
+        height: 42,
+        decoration: BoxDecoration(
+          color: isOffline
+              ? AppPalette.surfaceDark
+              : statusColor.withValues(alpha: 0.12),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isOffline
+                ? AppPalette.borderDark
+                : statusColor.withValues(alpha: 0.35),
+          ),
+        ),
+        child: Center(
+          child: Icon(
+            isOffline
+                ? Icons.videocam_off_rounded
+                : Icons.videocam_rounded,
+            color: statusColor,
+            size: 20,
+          ),
+        ),
       ),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            child: Row(
-              children: [
-                Container(
-                  width: 56,
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: isOffline
-                        ? AppColors.clayBg
-                        : AppColors.primaryBlue.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      isOffline
-                          ? Icons.videocam_off_rounded
-                          : Icons.videocam_rounded,
-                      color: statusColor,
-                      size: 22,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 14),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        camera.name,
-                        style: AppTypography.cairoBold(
-                          fontSize: 13.5,
-                          color: AppColors.textDarkPrimary,
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Container(
-                            width: 7,
-                            height: 7,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: statusColor,
-                            ),
-                          ),
-                          const SizedBox(width: 6),
-                          Text(
-                            statusText,
-                            style: AppTypography.cairoRegular(
-                              fontSize: 11,
-                              color: AppColors.textDarkSecondary,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: AppColors.primaryBlue,
-                  size: 16,
+      subtitle: statusText,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 7,
+            height: 7,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: statusColor,
+              boxShadow: [
+                BoxShadow(
+                  color: statusColor.withValues(alpha: 0.6),
+                  blurRadius: 6,
                 ),
               ],
             ),
           ),
-        ),
+          const SizedBox(width: 8),
+          const Icon(
+            Icons.chevron_left_rounded,
+            color: AppPalette.textLightMuted,
+            size: 18,
+          ),
+        ],
       ),
     );
   }

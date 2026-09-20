@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'app_palette.dart';
+export 'app_palette.dart';
 
 /// Centralized Executive Palette for AEGIS Command Center.
 /// Delegates to and exposes [AppPalette] for clean design tokens.
@@ -9,25 +10,25 @@ class AppColors {
   // ── 👑 Royal Palette Accessors (استدعاء مباشر للألوان الملكية) ────────────
   static const Color royalPrimary = AppPalette.primary;
   static const Color royalGold = AppPalette.imperialGold;
-  static const Color royalNavy = AppPalette.royalNavy;
+  static const Color royalNavy = AppPalette.bgDarkObsidian;
   static const Color royalObsidian = AppPalette.bgDarkObsidian;
 
 
-  // ── Neumorphic Dual-Tone Core Colors ─────────────────────────────────────
-  static const Color clayBg = Color(0xFFEFF2F9); // Soft lavender-grey clay background
-  static const Color clayCard = Color(0xFFF7F9FE); // Elevated white-clay surface
-  static const Color darkIndigo = Color(0xFF181E36); // Deep midnight indigo header section
-  static const Color darkIndigoSurface = Color(0xFF222947); // Dark card container
+  // ── Obsidian Surfaces (IMG_8105) ──────────────────────────────────────────
+  static const Color clayBg = AppPalette.bgDarkObsidian;
+  static const Color clayCard = AppPalette.cardDark;
+  static const Color darkIndigo = AppPalette.surfaceDark;
+  static const Color darkIndigoSurface = AppPalette.cardElevatedDark;
 
-  // ── Executive Store-Grade Modern Palette ────────────────────────────────
-  static const Color executiveDarkBg = Color(0xFF0F172A); // Premium Slate 900
-  static const Color executiveCardDark = Color(0xFF1E293B); // Elevated Slate 800
-  static const Color executiveCardBorder = Color(0xFF334155); // Slate 700 border
-  static const Color executiveAccent = Color(0xFF38BDF8); // Sky blue neon accent
+  // ── Executive Palette (mapped to IMG_8105) ──────────────────────────────
+  static const Color executiveDarkBg = AppPalette.bgDarkObsidian;
+  static const Color executiveCardDark = AppPalette.cardDark;
+  static const Color executiveCardBorder = AppPalette.borderDark;
+  static const Color executiveAccent = AppPalette.cyanLight;
 
   // ── Accents & Gradients ──────────────────────────────────────────────────
-  static const Color primaryBlue = Color(0xFF4F63F6); // Soft royal indigo blue
-  static const Color primaryViolet = Color(0xFF8B5CF6); // Soft violet accent
+  static const Color primaryBlue = AppPalette.primary;       // Electric Violet
+  static const Color primaryViolet = AppPalette.royalViolet;
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [Color(0xFF4F63F6), Color(0xFF7C3AED)],
     begin: Alignment.topLeft,
@@ -54,12 +55,12 @@ class AppColors {
     end: Alignment.bottomRight,
   );
 
-  // ── Text Hierarchy ───────────────────────────────────────────────────────
-  static const Color textDarkPrimary = Color(0xFF1E293B); // Slate 800
-  static const Color textDarkSecondary = Color(0xFF64748B); // Slate 500
-  static const Color textDarkTertiary = Color(0xFF94A3B8); // Slate 400
-  static const Color textLightPrimary = Color(0xFFF8FAFC);
-  static const Color textLightSecondary = Color(0xFFCBD5E1);
+  // ── Text Hierarchy (Mapped to high-contrast light tokens for Obsidian dark theme)
+  static const Color textDarkPrimary = AppPalette.textLightPrimary;
+  static const Color textDarkSecondary = AppPalette.textLightSecondary;
+  static const Color textDarkTertiary = AppPalette.textLightMuted;
+  static const Color textLightPrimary = AppPalette.textLightPrimary;
+  static const Color textLightSecondary = AppPalette.textLightSecondary;
 
   // ── Status Indicators ────────────────────────────────────────────────────
   static const Color cyan = Color(0xFF06B6D4);
@@ -72,18 +73,18 @@ class AppColors {
   static const Color redDim = Color(0x26EF4444);
 
   // ── Backward Compatible Aliases ──────────────────────────────────────────
-  static const Color bgVoid = clayBg;
-  static const Color bgPage = clayBg;
-  static const Color panel = clayCard;
-  static const Color panelRaised = clayCard;
-  static const Color panelLine = Color(0xFFE2E8F0);
-  static const Color steel = Color(0xFFCBD5E1);
-  static const Color textPrimary = textDarkPrimary;
-  static const Color textSecondary = textDarkSecondary;
-  static const Color textTertiary = textDarkTertiary;
+  static const Color bgVoid = AppPalette.bgDarkObsidian;
+  static const Color bgPage = AppPalette.bgDarkObsidian;
+  static const Color panel = AppPalette.cardDark;
+  static const Color panelRaised = AppPalette.cardElevatedDark;
+  static const Color panelLine = AppPalette.borderDark;
+  static const Color steel = AppPalette.textLightMuted;
+  static const Color textPrimary = AppPalette.textLightPrimary;
+  static const Color textSecondary = AppPalette.textLightSecondary;
+  static const Color textTertiary = AppPalette.textLightMuted;
 
   /// Returns active primary color depending on [isEmergency] state.
-  static Color getPrimary(bool isEmergency) => isEmergency ? red : primaryBlue;
+  static Color getPrimary(bool isEmergency) => isEmergency ? red : AppPalette.primary;
 
   /// Returns active dim primary color depending on [isEmergency] state.
   static Color getPrimaryDim(bool isEmergency) => isEmergency ? redDim : cyanDim;

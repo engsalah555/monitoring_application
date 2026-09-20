@@ -21,9 +21,9 @@ class ExecutiveHeaderCard extends StatelessWidget {
             state.isEmergency ? AppPalette.crimsonAlert : AppPalette.emeraldLive;
 
         return RoyalGlassContainer(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          borderRadius: 22,
-          backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.8),
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+          borderRadius: 18,
+          backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.82),
           border: Border.all(
             color: state.isEmergency
                 ? AppPalette.crimsonAlert.withValues(alpha: 0.4)
@@ -41,7 +41,7 @@ class ExecutiveHeaderCard extends StatelessWidget {
                       Text(
                         AppStrings.greetingUser,
                         style: AppTypography.cairoBold(
-                          fontSize: 16.5,
+                          fontSize: 15,
                           color: Colors.white,
                         ),
                       ),

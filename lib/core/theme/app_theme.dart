@@ -1,65 +1,121 @@
 import 'package:flutter/material.dart';
-import 'app_colors.dart';
+import 'package:flutter/services.dart';
+import 'app_palette.dart';
 
-/// Central Material 3 Theme Specification (Executive Dual Mode).
+/// Central Material 3 Theme — AEGIS Command Center.
+///
+/// Primary design system: Matte Obsidian (`#0B0B0F`) + Electric Violet
+/// (`#7C5CFC`) matching IMG_8105.WEBP aesthetic.
 class AppTheme {
   const AppTheme._();
 
+  // ── Dark Theme — Matte Obsidian + Electric Violet ─────────────────────────
   static ThemeData get darkTheme {
-    final baseDark = ThemeData.dark(useMaterial3: true);
+    final base = ThemeData.dark(useMaterial3: true);
 
-    return baseDark.copyWith(
-      scaffoldBackgroundColor: AppColors.bgPage,
+    return base.copyWith(
+      scaffoldBackgroundColor: AppPalette.bgDarkObsidian,
       colorScheme: const ColorScheme.dark(
-        primary: AppColors.cyan,
-        surface: AppColors.panel,
-        error: AppColors.red,
+        primary: AppPalette.primary,
+        primaryContainer: AppPalette.primaryDark,
+        secondary: AppPalette.cyanLight,
+        secondaryContainer: AppPalette.cyanGlow,
+        surface: AppPalette.surfaceDark,
+        surfaceContainerHighest: AppPalette.cardElevatedDark,
+        error: AppPalette.crimsonAlert,
+        onPrimary: Colors.white,
+        onSecondary: Colors.white,
+        onSurface: AppPalette.textLightPrimary,
+        onError: Colors.white,
+        outline: AppPalette.borderDark,
+        shadow: Color(0xFF000000),
       ),
-      textTheme: baseDark.textTheme.apply(
+      textTheme: base.textTheme.apply(
         fontFamily: 'Cairo',
+        bodyColor: AppPalette.textLightPrimary,
+        displayColor: AppPalette.textLightPrimary,
+      ),
+      iconTheme: const IconThemeData(
+        color: AppPalette.textLightSecondary,
       ),
       appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppPalette.bgDarkObsidian,
+        foregroundColor: AppPalette.textLightPrimary,
         elevation: 0,
         scrolledUnderElevation: 0,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+          statusBarIconBrightness: Brightness.light,
+          systemNavigationBarColor: AppPalette.bgDarkObsidian,
+          systemNavigationBarIconBrightness: Brightness.light,
+        ),
+      ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        selectedItemColor: AppPalette.primary,
+        unselectedItemColor: AppPalette.dockInactiveIcon,
       ),
       cardTheme: CardThemeData(
-        color: AppColors.panel,
+        color: AppPalette.cardDark,
         elevation: 0,
         shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppPalette.borderDark),
+        ),
+      ),
+      dividerTheme: const DividerThemeData(
+        color: AppPalette.borderDark,
+        thickness: 1,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AppPalette.surfaceDark,
+        hintStyle: const TextStyle(
+          color: AppPalette.textLightMuted,
+          fontFamily: 'Cairo',
+        ),
+        enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          side: const BorderSide(color: AppColors.panelLine),
+          borderSide: const BorderSide(color: AppPalette.borderDark),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(14),
+          borderSide: const BorderSide(color: AppPalette.primary, width: 1.5),
+        ),
+      ),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: AppPalette.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+      ),
+      switchTheme: SwitchThemeData(
+        thumbColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected)
+              ? AppPalette.primary
+              : AppPalette.textLightMuted,
+        ),
+        trackColor: WidgetStateProperty.resolveWith(
+          (s) => s.contains(WidgetState.selected)
+              ? AppPalette.primaryGlow
+              : AppPalette.surfaceDark,
+        ),
+      ),
+      dialogTheme: DialogThemeData(
+        backgroundColor: AppPalette.cardDark,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AppPalette.borderDark),
         ),
       ),
     );
   }
 
-  static ThemeData get lightTheme {
-    final baseLight = ThemeData.light(useMaterial3: true);
-
-    return baseLight.copyWith(
-      scaffoldBackgroundColor: AppColors.clayBg,
-      colorScheme: const ColorScheme.light(
-        primary: AppColors.primaryBlue,
-        surface: AppColors.clayCard,
-        error: AppColors.red,
-      ),
-      textTheme: baseLight.textTheme.apply(
-        fontFamily: 'Cairo',
-      ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-      ),
-      cardTheme: CardThemeData(
-        color: AppColors.clayCard,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
-          side: const BorderSide(color: AppColors.panelLine),
-        ),
-      ),
-    );
-  }
+  // ── Light Theme — kept minimal, redirects to dark for now ─────────────────
+  static ThemeData get lightTheme => darkTheme;
 }

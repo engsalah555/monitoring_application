@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/inputs/executive_text_field.dart';
+import '../../../../core/widgets/royal/royal_button.dart';
 
-/// User-friendly Add Device / Camera Wizard for App Store & Google Play users.
+/// User-friendly Add Device / Camera Wizard for App Store & Google Play users in Matte Obsidian theme.
 class AddDeviceWizardDialog extends StatefulWidget {
   const AddDeviceWizardDialog({super.key});
 
@@ -32,9 +34,23 @@ class _AddDeviceWizardDialogState extends State<AddDeviceWizardDialog> {
   bool _connectionSuccess = false;
 
   @override
+  void dispose() {
+    _nameController.dispose();
+    _ipController.dispose();
+    _portController.dispose();
+    _userController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: AppPalette.cardDark,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(22),
+        side: const BorderSide(color: AppPalette.borderDark),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -43,20 +59,27 @@ class _AddDeviceWizardDialogState extends State<AddDeviceWizardDialog> {
           children: [
             Row(
               children: [
-                const Icon(Icons.add_a_photo_rounded, color: AppColors.primaryBlue, size: 24),
+                Container(
+                  padding: const EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: AppPalette.primary.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(Icons.add_a_photo_rounded, color: AppPalette.primary, size: 22),
+                ),
                 const SizedBox(width: 10),
                 Text(
                   'إضافة كاميرا / جهاز جديد',
-                  style: AppTypography.cairoBold(fontSize: 16, color: AppColors.textDarkPrimary),
+                  style: AppTypography.cairoBold(fontSize: 15, color: Colors.white),
                 ),
                 const Spacer(),
                 IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(Icons.close, color: AppPalette.textLightMuted),
                   onPressed: () => Navigator.pop(context),
                 ),
               ],
             ),
-            const Divider(height: 20),
+            const Divider(height: 20, color: AppPalette.borderDark),
 
             if (_currentStep == 0) _buildStep0MethodSelection(),
             if (_currentStep == 1) _buildStep1DetailsInput(),
@@ -73,7 +96,7 @@ class _AddDeviceWizardDialogState extends State<AddDeviceWizardDialog> {
       children: [
         Text(
           'اختر طريقة ربط الكاميرا المناسبة لك:',
-          style: AppTypography.cairoRegular(fontSize: 13, color: AppColors.textDarkSecondary),
+          style: AppTypography.cairoRegular(fontSize: 12.5, color: AppPalette.textLightSecondary),
         ),
         const SizedBox(height: 14),
 
@@ -99,17 +122,11 @@ class _AddDeviceWizardDialogState extends State<AddDeviceWizardDialog> {
 
         SizedBox(
           width: double.infinity,
-          child: ElevatedButton(
+          child: RoyalButton(
+            label: 'التالي',
+            variant: RoyalButtonVariant.primary,
+            height: 44,
             onPressed: () => setState(() => _currentStep = 1),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.primaryBlue,
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            ),
-            child: Text(
-              'التالي',
-              style: AppTypography.cairoBold(fontSize: 14, color: Colors.white),
-            ),
           ),
         ),
       ],
@@ -125,32 +142,32 @@ class _AddDeviceWizardDialogState extends State<AddDeviceWizardDialog> {
     final isSelected = _selectedMethod == id;
     return InkWell(
       onTap: () => setState(() => _selectedMethod = id),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(14),
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryBlue.withValues(alpha: 0.08) : Colors.grey.shade50,
+          color: isSelected ? AppPalette.primary.withValues(alpha: 0.12) : AppPalette.surfaceDark,
           border: Border.all(
-            color: isSelected ? AppColors.primaryBlue : Colors.grey.shade300,
+            color: isSelected ? AppPalette.primary : AppPalette.borderDark,
             width: isSelected ? 1.5 : 1,
           ),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(14),
         ),
         child: Row(
           children: [
-            Icon(icon, color: isSelected ? AppColors.primaryBlue : Colors.grey.shade600, size: 24),
+            Icon(icon, color: isSelected ? AppPalette.primary : AppPalette.textLightMuted, size: 24),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: AppTypography.cairoBold(fontSize: 13, color: AppColors.textDarkPrimary)),
-                  Text(subtitle, style: AppTypography.cairoRegular(fontSize: 11, color: AppColors.textDarkSecondary)),
+                  Text(title, style: AppTypography.cairoBold(fontSize: 12.5, color: Colors.white)),
+                  Text(subtitle, style: AppTypography.cairoRegular(fontSize: 10.5, color: AppPalette.textLightMuted)),
                 ],
               ),
             ),
-            if (isSelected) const Icon(Icons.check_circle_rounded, color: AppColors.primaryBlue, size: 20),
+            if (isSelected) const Icon(Icons.check_circle_rounded, color: AppPalette.primary, size: 20),
           ],
         ),
       ),
@@ -163,37 +180,34 @@ class _AddDeviceWizardDialogState extends State<AddDeviceWizardDialog> {
       children: [
         Text(
           'أدخل بيانات الكاميرا / الجهاز:',
-          style: AppTypography.cairoBold(fontSize: 13, color: AppColors.textDarkPrimary),
+          style: AppTypography.cairoBold(fontSize: 13, color: Colors.white),
         ),
         const SizedBox(height: 12),
-        TextField(
+        ExecutiveTextField(
           controller: _nameController,
-          decoration: const InputDecoration(
-            labelText: 'اسم الكاميرا (مثال: كاميرا المدخل الرئيسي)',
-            prefixIcon: Icon(Icons.videocam_outlined),
-          ),
+          label: 'اسم الكاميرا',
+          hint: 'مثال: كاميرا المدخل الرئيسي',
+          prefixIcon: Icons.videocam_outlined,
         ),
         const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
               flex: 2,
-              child: TextField(
+              child: ExecutiveTextField(
                 controller: _ipController,
-                decoration: const InputDecoration(
-                  labelText: 'عنوان IP أو RTSP URL',
-                  prefixIcon: Icon(Icons.lan_outlined),
-                ),
+                label: 'IP / RTSP URL',
+                hint: '192.168.1.120',
+                prefixIcon: Icons.lan_outlined,
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: TextField(
+              child: ExecutiveTextField(
                 controller: _portController,
+                label: 'Port',
+                hint: '554',
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'المنفذ Port',
-                ),
               ),
             ),
           ],
@@ -202,52 +216,50 @@ class _AddDeviceWizardDialogState extends State<AddDeviceWizardDialog> {
         Row(
           children: [
             Expanded(
-              child: TextField(
+              child: ExecutiveTextField(
                 controller: _userController,
-                decoration: const InputDecoration(
-                  labelText: 'اسم المستخدم',
-                  prefixIcon: Icon(Icons.person_outline),
-                ),
+                label: 'اسم المستخدم',
+                hint: 'admin',
+                prefixIcon: Icons.person_outline,
               ),
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: TextField(
+              child: ExecutiveTextField(
                 controller: _passwordController,
+                label: 'كلمة السر',
                 obscureText: true,
-                decoration: const InputDecoration(
-                  labelText: 'كلمة السر',
-                  prefixIcon: Icon(Icons.lock_outline),
-                ),
+                hint: '••••••',
+                prefixIcon: Icons.lock_outline,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 18),
 
         Row(
           children: [
             OutlinedButton(
               onPressed: () => setState(() => _currentStep = 0),
+              style: OutlinedButton.styleFrom(
+                side: const BorderSide(color: AppPalette.borderDark),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                foregroundColor: AppPalette.textLightMuted,
+              ),
               child: const Text('السابق'),
             ),
             const SizedBox(width: 8),
             Expanded(
-              child: ElevatedButton(
+              child: RoyalButton(
+                label: 'اختبار الاتصال والحفظ',
+                variant: RoyalButtonVariant.primary,
+                height: 44,
                 onPressed: () {
                   setState(() {
                     _currentStep = 2;
                     _testConnection();
                   });
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryBlue,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: Text(
-                  'اختبار الاتصال والحفظ',
-                  style: AppTypography.cairoBold(fontSize: 13, color: Colors.white),
-                ),
               ),
             ),
           ],
@@ -261,37 +273,32 @@ class _AddDeviceWizardDialogState extends State<AddDeviceWizardDialog> {
       children: [
         const SizedBox(height: 10),
         if (_isTestingConnection) ...[
-          const CircularProgressIndicator(),
+          const CircularProgressIndicator(color: AppPalette.primary),
           const SizedBox(height: 16),
           Text(
             'جاري الاتصال بالكاميرا واختبار البث...',
-            style: AppTypography.cairoRegular(fontSize: 13, color: AppColors.textDarkSecondary),
+            style: AppTypography.cairoRegular(fontSize: 13, color: AppPalette.textLightSecondary),
           ),
         ] else if (_connectionSuccess) ...[
-          const Icon(Icons.check_circle_outline_rounded, color: AppColors.green, size: 54),
+          const Icon(Icons.check_circle_outline_rounded, color: AppPalette.emeraldLive, size: 54),
           const SizedBox(height: 12),
           Text(
             'تم الاتصال بنجاح! الكاميرا جاهزة للبث.',
-            style: AppTypography.cairoBold(fontSize: 15, color: AppColors.textDarkPrimary),
+            style: AppTypography.cairoBold(fontSize: 15, color: Colors.white),
           ),
           const SizedBox(height: 6),
           Text(
             'تم إدراج ${_nameController.text} ضمن قائمة كاميراتك.',
-            style: AppTypography.cairoRegular(fontSize: 12, color: AppColors.textDarkSecondary),
+            style: AppTypography.cairoRegular(fontSize: 12, color: AppPalette.textLightMuted),
           ),
           const SizedBox(height: 20),
           SizedBox(
             width: double.infinity,
-            child: ElevatedButton(
+            child: RoyalButton(
+              label: 'تم - إنهاء',
+              variant: RoyalButtonVariant.primary,
+              height: 44,
               onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.green,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              child: Text(
-                'تم - إنهاء',
-                style: AppTypography.cairoBold(fontSize: 14, color: Colors.white),
-              ),
             ),
           ),
         ],

@@ -1,68 +1,73 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_palette.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../core/widgets/royal/royal_glass.dart';
 
-/// KPI Executive Metrics Strip Widget displaying live operational stats.
+/// KPI Executive Metrics Strip Widget displaying live operational stats with virtualized scrolling.
 class KpiMetricsStrip extends StatelessWidget {
   const KpiMetricsStrip({super.key});
 
+  static const _metrics = [
+    (
+      label: 'الكاميرات الحية',
+      value: '12 / 12',
+      sub: '100% متصل بالشبكة',
+      icon: Icons.videocam_rounded,
+      color: AppPalette.emeraldLive,
+      glow: AppPalette.emeraldGlow,
+    ),
+    (
+      label: 'التنبيهات والذكاء',
+      value: '3 تنبيهات',
+      sub: 'كشف حركة وسيارات',
+      icon: Icons.auto_awesome_rounded,
+      color: AppPalette.amberWarning,
+      glow: AppPalette.amberGlow,
+    ),
+    (
+      label: 'التخزين والمساحة',
+      value: '94% متاح',
+      sub: 'NVR 4TB Cloud',
+      icon: Icons.cloud_done_rounded,
+      color: AppPalette.cyanLight,
+      glow: AppPalette.cyanGlow,
+    ),
+    (
+      label: 'سرعة وسلاسة البث',
+      value: '60 FPS',
+      sub: '4K Ultra HD',
+      icon: Icons.speed_rounded,
+      color: AppPalette.imperialGold,
+      glow: AppPalette.goldGlow,
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final metrics = [
-      (
-        label: 'الكاميرات الحية',
-        value: '12 / 12',
-        sub: '100% متصل بالشبكة',
-        icon: Icons.videocam_rounded,
-        color: AppPalette.emeraldLive,
-        glow: AppPalette.emeraldGlow,
-      ),
-      (
-        label: 'التنبيهات والذكاء',
-        value: '3 تنبيهات',
-        sub: 'كشف حركة وسيارات',
-        icon: Icons.auto_awesome_rounded,
-        color: AppPalette.amberWarning,
-        glow: AppPalette.amberGlow,
-      ),
-      (
-        label: 'التخزين والمساحة',
-        value: '94% متاح',
-        sub: 'NVR 4TB Cloud',
-        icon: Icons.cloud_done_rounded,
-        color: AppPalette.cyanLight,
-        glow: AppPalette.cyanGlow,
-      ),
-      (
-        label: 'سرعة وسلاسة البث',
-        value: '60 FPS',
-        sub: '4K Ultra HD',
-        icon: Icons.speed_rounded,
-        color: AppPalette.imperialGold,
-        glow: AppPalette.goldGlow,
-      ),
-    ];
-
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      physics: const BouncingScrollPhysics(),
-      child: Row(
-        children: metrics.map((m) {
-          return RoyalGlassContainer(
-            margin: const EdgeInsets.only(left: 10),
+    return SizedBox(
+      height: 106,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        physics: const BouncingScrollPhysics(),
+        itemCount: _metrics.length,
+        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        itemBuilder: (context, index) {
+          final m = _metrics[index];
+          return Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-            borderRadius: 18,
-            blur: 16,
-            backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.75),
-            border: Border.all(
-              color: m.color.withValues(alpha: 0.25),
-              width: 1,
+            decoration: BoxDecoration(
+              color: AppPalette.surfaceDark,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(
+                color: m.color.withValues(alpha: 0.25),
+                width: 1,
+              ),
+              boxShadow: AppPalette.softCardShadow,
             ),
             child: ConstrainedBox(
               constraints: const BoxConstraints(minWidth: 135),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Row(
                     children: [
@@ -103,7 +108,7 @@ class KpiMetricsStrip extends StatelessWidget {
               ),
             ),
           );
-        }).toList(),
+        },
       ),
     );
   }

@@ -3,14 +3,15 @@ import 'package:provider/provider.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/feedback/cctv_state_view.dart';
+import '../../../../core/widgets/inputs/executive_segmented_control.dart';
+import '../../../../core/widgets/royal/royal_button.dart';
 import '../../../surveillance_system/domain/entities/app_tab.dart';
 import '../../../surveillance_system/presentation/controllers/aegis_provider.dart';
 import '../widgets/add_branch_dialog.dart';
 import '../widgets/camera_row_tile.dart';
 import '../widgets/floor_map_view.dart';
 import '../widgets/hierarchy_breadcrumb.dart';
-
-import '../../../../core/theme/neumorphic_decorations.dart';
 
 /// Screen 2: Hierarchy and Asset locations list screen.
 class HierarchyScreen extends StatefulWidget {
@@ -22,6 +23,11 @@ class HierarchyScreen extends StatefulWidget {
 
 class _HierarchyScreenState extends State<HierarchyScreen> {
   int _segmentedIndex = 0; // 0: Cam List, 1: Floor Map
+
+  static const List<SegmentItem<int>> _hierarchySegments = [
+    SegmentItem(value: 0, label: AppStrings.camListTab, icon: Icons.view_list_rounded),
+    SegmentItem(value: 1, label: AppStrings.floorMapTab, icon: Icons.map_outlined),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -58,119 +64,51 @@ class _HierarchyScreenState extends State<HierarchyScreen> {
                   ),
                 ],
               ),
-              InkWell(
-                onTap: () => AddBranchDialog.show(context),
-                borderRadius: BorderRadius.circular(14),
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primaryBlue.withValues(alpha: 0.35),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.add_rounded,
-                          color: Colors.white, size: 18),
-                      const SizedBox(width: 4),
-                      Text(
-                        'ربط NVR',
-                        style: AppTypography.cairoBold(
-                            fontSize: 11.5, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                ),
+              RoyalButton(
+                label: 'ربط NVR',
+                icon: Icons.add_rounded,
+                variant: RoyalButtonVariant.primary,
+                height: 42,
+                borderRadius: 14,
+                onPressed: () => AddBranchDialog.show(context),
               ),
             ],
           ),
         ),
 
-        // Neumorphic Segmented Control
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          padding: const EdgeInsets.all(4),
-          decoration: NeumorphicDecorations.softRaised(
-            color: AppColors.clayCard,
-            borderRadius: 18,
-          ),
-          child: Row(
-            children: [
-              _buildSegmentTab(
-                index: 0,
-                label: AppStrings.camListTab,
-              ),
-              _buildSegmentTab(
-                index: 1,
-                label: AppStrings.floorMapTab,
-              ),
-            ],
+        // Unified Segmented Control
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          child: ExecutiveSegmentedControl<int>(
+            items: _hierarchySegments,
+            selectedValue: _segmentedIndex,
+            isExpanded: true,
+            onValueChanged: (val) => setState(() => _segmentedIndex = val),
           ),
         ),
 
-        // Content Area
+        // Content Area with Empty State Handling
         Expanded(
           child: _segmentedIndex == 0
-              ? ListView.builder(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                  itemCount: provider.zoneCameras.length,
-                  itemBuilder: (context, index) {
-                    final camera = provider.zoneCameras[index];
-                    return CameraRowTile(
-                      camera: camera,
-                      isEmergency: provider.isEmergency,
-                      onTap: () => provider.setSelectedTab(AppTab.liveSingle),
-                    );
-                  },
-                )
+              ? (provider.zoneCameras.isEmpty
+                  ? CctvStateView.emptyCameras(
+                      onAddCamera: () => AddBranchDialog.show(context),
+                    )
+                  : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                      itemCount: provider.zoneCameras.length,
+                      itemBuilder: (context, index) {
+                        final camera = provider.zoneCameras[index];
+                        return CameraRowTile(
+                          camera: camera,
+                          isEmergency: provider.isEmergency,
+                          onTap: () => provider.setSelectedTab(AppTab.liveSingle),
+                        );
+                      },
+                    ))
               : const FloorMapView(primaryColor: AppColors.primaryBlue),
         ),
       ],
-    );
-  }
-
-  Widget _buildSegmentTab({
-    required int index,
-    required String label,
-  }) {
-    final isSelected = _segmentedIndex == index;
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => setState(() => _segmentedIndex = index),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          padding: const EdgeInsets.symmetric(vertical: 10),
-          decoration: isSelected
-              ? BoxDecoration(
-                  gradient: AppColors.primaryGradient,
-                  borderRadius: BorderRadius.circular(14),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.primaryBlue.withValues(alpha: 0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                )
-              : null,
-          child: Text(
-            label,
-            textAlign: TextAlign.center,
-            style: AppTypography.cairoBold(
-              fontSize: 11.5,
-              color: isSelected ? Colors.white : AppColors.textDarkSecondary,
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

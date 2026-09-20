@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../core/extensions/build_context_x.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../../core/theme/neumorphic_decorations.dart';
+import '../../../../core/widgets/royal/royal_button.dart';
 import '../../../surveillance_system/domain/entities/branch.dart';
 import '../../../surveillance_system/domain/entities/nvr_brand.dart';
 import '../../../surveillance_system/domain/entities/nvr_device.dart';
@@ -121,9 +121,11 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
       insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: Container(
         constraints: const BoxConstraints(maxWidth: 490),
-        decoration: NeumorphicDecorations.softRaised(
-          color: AppColors.clayCard,
-          borderRadius: 28,
+        decoration: BoxDecoration(
+          color: AppPalette.cardDark,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: AppPalette.borderDark),
+          boxShadow: AppPalette.softCardShadow,
         ),
         padding: const EdgeInsets.all(22),
         child: SingleChildScrollView(
@@ -142,7 +144,7 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            gradient: AppColors.primaryGradient,
+                            gradient: AppPalette.royalSapphireGradient,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Icon(
@@ -156,7 +158,7 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                           'إضافة فرع محلي مع تحديد الـ GPS',
                           style: AppTypography.cairoBold(
                             fontSize: 15,
-                            color: AppColors.textDarkPrimary,
+                            color: Colors.white,
                           ),
                         ),
                       ],
@@ -164,7 +166,7 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                     IconButton(
                       icon: const Icon(
                         Icons.close_rounded,
-                        color: AppColors.textDarkSecondary,
+                        color: AppPalette.textLightMuted,
                         size: 22,
                       ),
                       onPressed: () => Navigator.of(context).pop(),
@@ -172,7 +174,7 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                const Divider(color: Color(0xFFE2E8F0)),
+                const Divider(color: AppPalette.borderDark),
                 const SizedBox(height: 12),
 
                 // Section 1: Branch Details & GPS
@@ -221,27 +223,28 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 12, vertical: 14),
-                        decoration: NeumorphicDecorations.softRaised(
-                          color: AppColors.clayBg,
-                          borderRadius: 12,
+                        decoration: BoxDecoration(
+                          color: AppPalette.surfaceDark,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: AppPalette.borderDark),
                         ),
                         child: _isLocatingGps
                             ? const SizedBox(
                                 width: 18,
                                 height: 18,
                                 child:
-                                    CircularProgressIndicator(strokeWidth: 2),
+                                    CircularProgressIndicator(strokeWidth: 2, color: AppPalette.primary),
                               )
                             : Row(
                                 children: [
                                   const Icon(Icons.my_location_rounded,
-                                      color: AppColors.primaryBlue, size: 18),
+                                      color: AppPalette.cyanLight, size: 18),
                                   const SizedBox(width: 6),
                                   Text(
                                     'تحديد GPS',
                                     style: AppTypography.cairoBold(
                                         fontSize: 11,
-                                        color: AppColors.primaryBlue),
+                                        color: AppPalette.cyanLight),
                                   ),
                                 ],
                               ),
@@ -456,54 +459,15 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
                 const SizedBox(height: 22),
 
                 // Submit Button
-                InkWell(
-                  onTap: _isTesting ? null : _submit,
-                  borderRadius: BorderRadius.circular(16),
-                  child: Container(
-                    width: double.infinity,
+                SizedBox(
+                  width: double.infinity,
+                  child: RoyalButton(
+                    label: _isTesting ? 'جاري الفحص وحفظ الفرع...' : 'اختبار الاتصال وحفظ الفرع',
+                    isLoading: _isTesting,
+                    variant: RoyalButtonVariant.primary,
                     height: 50,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primaryBlue.withValues(alpha: 0.35),
-                          blurRadius: 14,
-                          offset: const Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: _isTesting
-                          ? Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const SizedBox(
-                                  width: 18,
-                                  height: 18,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  'جاري الفحص وحفظ الفرع...',
-                                  style: AppTypography.cairoBold(
-                                    fontSize: 12.5,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Text(
-                              'اختبار الاتصال وحفظ الفرع',
-                              style: AppTypography.cairoBold(
-                                fontSize: 13,
-                                color: Colors.white,
-                              ),
-                            ),
-                    ),
+                    borderRadius: 16,
+                    onPressed: _isTesting ? null : _submit,
                   ),
                 ),
               ],
@@ -519,23 +483,23 @@ class _AddBranchDialogState extends State<AddBranchDialog> {
       hintText: hint,
       hintStyle: AppTypography.cairoRegular(
         fontSize: 11,
-        color: AppColors.textDarkTertiary,
+        color: AppPalette.textLightMuted,
       ),
-      prefixIcon: Icon(icon, color: AppColors.primaryBlue, size: 18),
+      prefixIcon: Icon(icon, color: AppPalette.primary, size: 18),
       filled: true,
-      fillColor: AppColors.clayBg,
+      fillColor: AppPalette.surfaceDark,
       contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+        borderSide: const BorderSide(color: AppPalette.borderDark),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: AppColors.primaryBlue, width: 1.5),
+        borderSide: const BorderSide(color: AppPalette.primary, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: AppColors.red),
+        borderSide: const BorderSide(color: AppPalette.crimsonAlert),
       ),
     );
   }

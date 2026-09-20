@@ -36,6 +36,7 @@ class AegisAppBar extends StatelessWidget implements PreferredSizeWidget {
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             borderRadius: 20,
             blur: 24,
+            enableBlur: true,
             backgroundColor: AppPalette.surfaceDark.withValues(alpha: 0.8),
             border: Border.all(
               color: AppPalette.borderGlow,

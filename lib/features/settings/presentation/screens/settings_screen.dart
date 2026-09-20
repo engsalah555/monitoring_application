@@ -4,6 +4,7 @@ import '../../../../core/constants/app_strings.dart';
 import '../../../../core/extensions/build_context_x.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/widgets/royal/royal_button.dart';
 import '../../../surveillance_system/presentation/controllers/aegis_provider.dart';
 import '../../../surveillance_system/presentation/widgets/add_device_wizard_dialog.dart';
 import '../widgets/nvr_branch_tile.dart';
@@ -39,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             AppStrings.settingsTitle,
             style: AppTypography.cairoBold(
               fontSize: 16.5,
-              color: AppColors.textDarkPrimary,
+              color: Colors.white,
             ),
           ),
           const SizedBox(height: 2),
@@ -47,7 +48,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             AppStrings.settingsSubtitle,
             style: AppTypography.cairoRegular(
               fontSize: 12,
-              color: AppColors.textDarkSecondary,
+              color: AppPalette.textLightMuted,
             ),
           ),
           const SizedBox(height: 16),
@@ -58,12 +59,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
             margin: const EdgeInsets.only(bottom: 16),
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(16),
+              gradient: AppPalette.royalSapphireGradient,
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: AppPalette.borderGlow),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primaryBlue.withValues(alpha: 0.3),
-                  blurRadius: 10,
+                  color: AppPalette.primary.withValues(alpha: 0.3),
+                  blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
               ],
@@ -88,22 +90,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                ElevatedButton(
+                RoyalButton(
+                  label: 'فتح الفريق',
+                  variant: RoyalButtonVariant.gold,
+                  height: 38,
+                  borderRadius: 12,
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const TeamManagementScreen()),
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: AppColors.primaryBlue,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
-                  child: Text(
-                    'فتح الفريق',
-                    style: AppTypography.cairoBold(fontSize: 11, color: AppColors.primaryBlue),
-                  ),
                 ),
               ],
             ),
@@ -126,36 +123,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.all(14.0),
-                child: InkWell(
-                  onTap: () => AddDeviceWizardDialog.show(context),
-                  borderRadius: BorderRadius.circular(14),
-                  child: Container(
-                    width: double.infinity,
+                child: SizedBox(
+                  width: double.infinity,
+                  child: RoyalButton(
+                    label: 'إضافة فرع وجهاز NVR جديد',
+                    icon: Icons.add_business_rounded,
+                    variant: RoyalButtonVariant.primary,
                     height: 48,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.primaryGradient,
-                      borderRadius: BorderRadius.circular(14),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primaryBlue.withValues(alpha: 0.35),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.add_business_rounded,
-                            color: Colors.white, size: 18),
-                        const SizedBox(width: 8),
-                        Text(
-                          'إضافة فرع وجهاز NVR جديد',
-                          style: AppTypography.cairoBold(
-                              fontSize: 12.5, color: Colors.white),
-                        ),
-                      ],
-                    ),
+                    borderRadius: 14,
+                    onPressed: () => AddDeviceWizardDialog.show(context),
                   ),
                 ),
               ),
